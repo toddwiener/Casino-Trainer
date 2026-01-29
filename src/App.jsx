@@ -164,8 +164,8 @@ body{margin:0;padding:0;min-height:100%;font-family:ui-sans-serif, system-ui, -a
   html{height:100%;height:100dvh;height:-webkit-fill-available}
   body{height:100%;height:100dvh;height:-webkit-fill-available;overflow:hidden}
   #root{height:100%;height:100dvh;height:-webkit-fill-available;overflow:hidden}
-  .ct-wrap{padding:6px;height:100%;height:100dvh;height:-webkit-fill-available;overflow-y:auto;overflow-x:hidden}
-  .ct-container{padding:8px;width:100%;overflow-x:hidden;min-height:calc(100% - 12px)}
+  .ct-wrap{padding:0;height:100%;height:100dvh;height:-webkit-fill-available;overflow-y:auto;overflow-x:hidden}
+  .ct-container{padding:8px;width:100%;max-width:none;margin:0;border-radius:0;overflow-x:hidden;min-height:100%}
   .strategy-overlay{padding:6px}
   .strategy-header{padding:10px 12px}
   .strategy-header h2{font-size:14px}
@@ -199,8 +199,8 @@ body{margin:0;padding:0;min-height:100%;font-family:ui-sans-serif, system-ui, -a
   html{height:100%;height:100dvh;height:-webkit-fill-available}
   body{height:100%;height:100dvh;height:-webkit-fill-available;overflow:hidden}
   #root{height:100%;height:100dvh;height:-webkit-fill-available;overflow:hidden}
-  .ct-wrap{padding:4px;height:100%;height:100dvh;height:-webkit-fill-available;overflow-y:auto;overflow-x:hidden}
-  .ct-container{padding:6px;border-radius:12px;width:100%;min-height:calc(100% - 8px)}
+  .ct-wrap{padding:0;height:100%;height:100dvh;height:-webkit-fill-available;overflow-y:auto;overflow-x:hidden}
+  .ct-container{padding:6px;border-radius:0;width:100%;max-width:none;margin:0;min-height:100%}
   .stats-bar{padding:4px 6px}
   .stat-value{font-size:12px}
   .stat-label{font-size:7px}
