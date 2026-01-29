@@ -160,8 +160,10 @@ body{margin:0;padding:0;min-height:100%;font-family:ui-sans-serif, system-ui, -a
 }
 
 @media (max-width: 640px) {
+  html{height:100%;height:-webkit-fill-available}
+  body{min-height:100%;min-height:-webkit-fill-available}
   #root{min-height:100vh;min-height:-webkit-fill-available}
-  .ct-wrap{padding:6px;min-height:auto}
+  .ct-wrap{padding:6px;min-height:100vh;min-height:-webkit-fill-available}
   .ct-container{padding:8px;width:calc(100% - 0px);overflow-x:hidden}
   .strategy-overlay{padding:6px}
   .strategy-header{padding:10px 12px}
@@ -193,8 +195,10 @@ body{margin:0;padding:0;min-height:100%;font-family:ui-sans-serif, system-ui, -a
 }
 
 @media (max-width: 480px) {
+  html{height:100%;height:-webkit-fill-available}
+  body{min-height:100%;min-height:-webkit-fill-available}
   #root{min-height:100vh;min-height:-webkit-fill-available}
-  .ct-wrap{padding:4px;min-height:auto}
+  .ct-wrap{padding:4px;min-height:100vh;min-height:-webkit-fill-available}
   .ct-container{padding:6px;border-radius:12px;width:calc(100% - 0px)}
   .stats-bar{padding:4px 6px}
   .stat-value{font-size:12px}
