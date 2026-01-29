@@ -10,6 +10,7 @@ import {
   Undo2,
   BookOpen,
   RotateCcw,
+  AlertCircle,
 } from "lucide-react";
 import evLookup from "./data/evLookup.json";
 
@@ -750,6 +751,15 @@ export default function CasinoTrainer() {
   const [evLoading, setEvLoading] = useState(false);
   const [showStrategySheet, setShowStrategySheet] = useState(false);
   const [strategyView, setStrategyView] = useState("action"); // "action" or "ev"
+  const [mistakes, setMistakes] = useState(() => {
+    try {
+      const stored = localStorage.getItem("bj_mistakes");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [showMistakes, setShowMistakes] = useState(false);
 
   function spawn(m = mode) {
     const s = generateScenario(m);
@@ -775,6 +785,14 @@ export default function CasinoTrainer() {
       setTotalAttempts(0);
       localStorage.setItem("bj_best_streak", "0");
     }
+  }
+
+  function trackMistake(mistakeData) {
+    setMistakes((prev) => {
+      const newMistakes = [mistakeData, ...prev].slice(0, 20); // Keep last 20
+      localStorage.setItem("bj_mistakes", JSON.stringify(newMistakes));
+      return newMistakes;
+    });
   }
 
   useEffect(() => {
@@ -967,6 +985,18 @@ export default function CasinoTrainer() {
       setTimeout(() => setFlashStreak(false), 700);
       // Automatically show inline feedback for wrong answers
       setMoreInfo({ visible: true });
+
+      // Track mistake
+      trackMistake({
+        timestamp: Date.now(),
+        category: ctx.category,
+        playerHand: [...currentHand],
+        playerTotal: ctx.category === "PAIR" ? null : (ctx.category === "SOFT" ? ctx.total : ctx.total),
+        dealerUpcard: { ...dealerUp },
+        chosenAction: action,
+        correctAction: best.action,
+        difficulty: mode,
+      });
     }
 
     const curr = handScores[active] || { c: 0, t: 0 };
@@ -1337,10 +1367,98 @@ export default function CasinoTrainer() {
     </div>
   );
 
+  const mistakesModal = showMistakes && (
+    <div className="strategy-overlay" onClick={() => setShowMistakes(false)}>
+      <div className="strategy-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="strategy-header">
+          <h2>Review Mistakes ({mistakes.length})</h2>
+          <button className="strategy-close" onClick={() => setShowMistakes(false)}>×</button>
+        </div>
+        <div className="strategy-content">
+          {mistakes.length === 0 ? (
+            <div style={{padding:"40px",textAlign:"center",color:"#6b7280"}}>
+              <AlertCircle size={48} style={{margin:"0 auto 16px",opacity:0.5}} />
+              <p style={{fontSize:"16px",fontWeight:"600"}}>No mistakes yet!</p>
+              <p style={{fontSize:"14px"}}>Keep practicing. Mistakes will appear here to help you learn.</p>
+            </div>
+          ) : (
+            <>
+              {/* Pattern Analysis */}
+              <div style={{marginBottom:"24px",padding:"16px",background:"#f9fafb",borderRadius:"12px"}}>
+                <h3 style={{margin:"0 0 12px",fontSize:"14px",fontWeight:"700"}}>Patterns</h3>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(150px, 1fr))",gap:"12px"}}>
+                  {(() => {
+                    const byCategory = mistakes.reduce((acc, m) => {
+                      acc[m.category] = (acc[m.category] || 0) + 1;
+                      return acc;
+                    }, {});
+                    return Object.entries(byCategory).map(([cat, count]) => (
+                      <div key={cat} style={{padding:"8px",background:"white",borderRadius:"8px",textAlign:"center"}}>
+                        <div style={{fontSize:"20px",fontWeight:"800",color:"#ef4444"}}>{count}</div>
+                        <div style={{fontSize:"11px",color:"#6b7280",textTransform:"uppercase"}}>{cat}</div>
+                      </div>
+                    ));
+                  })()}
+                </div>
+              </div>
+
+              {/* Mistakes List */}
+              <h3 style={{margin:"0 0 12px",fontSize:"14px",fontWeight:"700"}}>Recent Mistakes</h3>
+              <div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
+                {mistakes.map((mistake, idx) => (
+                  <div key={idx} style={{padding:"12px",background:"#fef2f2",border:"1px solid #fecaca",borderRadius:"10px"}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"start",marginBottom:"8px"}}>
+                      <div>
+                        <div style={{fontSize:"12px",fontWeight:"700",color:"#991b1b"}}>
+                          {mistake.category} - {mistake.difficulty}
+                        </div>
+                        <div style={{fontSize:"11px",color:"#6b7280"}}>
+                          {new Date(mistake.timestamp).toLocaleDateString()} {new Date(mistake.timestamp).toLocaleTimeString()}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{display:"flex",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
+                      <div>
+                        <div style={{fontSize:"10px",color:"#6b7280",marginBottom:"4px"}}>Your Hand</div>
+                        <div style={{display:"flex",gap:"4px"}}>
+                          {mistake.playerHand.map((card, i) => (
+                            <div key={i} style={{fontSize:"11px",padding:"4px 8px",background:"white",border:"1px solid #e5e7eb",borderRadius:"6px",fontWeight:"600"}}>
+                              {card.rank}
+                              <span style={{color:card.suit==="♥"||card.suit==="♦"?"#dc2626":"#000"}}>{card.suit}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{fontSize:"14px",color:"#6b7280"}}>vs</div>
+                      <div>
+                        <div style={{fontSize:"10px",color:"#6b7280",marginBottom:"4px"}}>Dealer</div>
+                        <div style={{fontSize:"11px",padding:"4px 8px",background:"white",border:"1px solid #e5e7eb",borderRadius:"6px",fontWeight:"600"}}>
+                          {mistake.dealerUpcard.rank}
+                          <span style={{color:mistake.dealerUpcard.suit==="♥"||mistake.dealerUpcard.suit==="♦"?"#dc2626":"#000"}}>{mistake.dealerUpcard.suit}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{marginTop:"8px",display:"flex",gap:"8px",alignItems:"center",fontSize:"12px"}}>
+                      <span style={{color:"#6b7280"}}>You chose:</span>
+                      <span style={{padding:"2px 8px",background:"#fee2e2",border:"1px solid #fecaca",borderRadius:"6px",fontWeight:"700",color:"#991b1b"}}>{mistake.chosenAction}</span>
+                      <span style={{color:"#6b7280"}}>Correct:</span>
+                      <span style={{padding:"2px 8px",background:"#d1fae5",border:"1px solid #a7f3d0",borderRadius:"6px",fontWeight:"700",color:"#065f46"}}>{mistake.correctAction}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className={`ct-wrap ${theme === "light" ? "light" : ""}`}>
       <style>{styles}</style>
       {strategySheet}
+      {mistakesModal}
       <div className="ct-container">
         {/* Unified Stats Bar (sticky) */}
         <div className="stats-bar">
@@ -1539,6 +1657,12 @@ export default function CasinoTrainer() {
               className="btn"
             >
               <HelpCircle size={16} /> Quick Tips
+            </button>
+            <button
+              onClick={() => setShowMistakes(true)}
+              className="btn"
+            >
+              <AlertCircle size={16} /> Review Mistakes {mistakes.length > 0 && `(${mistakes.length})`}
             </button>
             <button
               onClick={resetStats}
