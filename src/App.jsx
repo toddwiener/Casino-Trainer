@@ -58,7 +58,7 @@ body{margin:0;font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Rob
 .feedback{min-height:28px;display:flex;align-items:center;gap:8px;margin-top:10px}
 .small{font-size:11px;color:#5f6b7a}
 .footer{margin-top:12px;color:#5a6875;font-size:11px}
-.select{padding:5px 9px;border-radius:9px;border:1px solid var(--outline);background:#fff}
+.select{padding:5px 9px;border-radius:9px;border:1px solid var(--outline);background:#fff;color:var(--ink);font-weight:600;font-size:13px;font-family:inherit}
 .stats{display:flex;gap:8px;align-items:center}
 .stats-bar{position:sticky;top:0;z-index:5;background:linear-gradient(135deg,rgba(255,255,255,0.98),rgba(249,250,251,0.98));backdrop-filter:blur(12px);border-bottom:1px solid var(--outline);border-radius:12px 12px 0 0;margin:-16px -16px 12px -16px;padding:10px 16px;display:flex;justify-content:space-around;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .stat-group{display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -1143,9 +1143,10 @@ export default function CasinoTrainer() {
         key = `${sorted}vs${dealerRank}`;
       }
     } else if (category === "SOFT") {
-      // For soft totals, use A + (total - 11)
+      // For soft totals, use A + (total - 11), sorted
       const otherCard = total - 11;
-      key = `A,${otherCard}vs${dealerRank}`;
+      const sorted = [String(otherCard), "A"].sort().join(',');
+      key = `${sorted}vs${dealerRank}`;
     } else if (category === "PAIR") {
       // For pairs, use rank,rankvsDealerRank
       key = `${total},${total}vs${dealerRank}`;
@@ -1486,46 +1487,20 @@ export default function CasinoTrainer() {
           <div
             style={{
               marginTop: 12,
-              display: "flex",
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
               gap: 8,
-              alignItems: "center",
-              flexWrap: "wrap",
             }}
           >
             <button
               onClick={() => (awaitingAdvance ? continueAdvance() : spawn())}
               className="btn primary"
               disabled={locked && !awaitingAdvance}
+              style={{gridColumn: "1 / -1"}}
             >
               <Repeat size={16} />{" "}
               {awaitingAdvance ? "Continue" : "Next Scenario"}
               <span className="kbd-hint">{awaitingAdvance ? "Space" : "N"}</span>
-            </button>
-            <button
-              onClick={undo}
-              className="btn"
-              disabled={history.length === 0}
-            >
-              <Undo2 size={16} /> Undo
-            </button>
-            <button
-              onClick={() => {
-                setStreak(0);
-                setBestStreak((prev) => {
-                  localStorage.setItem("bj_best_streak", "0");
-                  return 0;
-                });
-                setTotalAttempts(0);
-                setTotalCorrect(0);
-                setMessage("");
-                setExplanation("");
-                setHistory([]);
-                setEvStats(null);
-              }}
-              className="btn"
-              disabled={locked}
-            >
-              Reset Stats
             </button>
             <button
               onClick={() => setShowStrategySheet(true)}
