@@ -161,11 +161,11 @@ body{margin:0;padding:0;min-height:100%;font-family:ui-sans-serif, system-ui, -a
 }
 
 @media (max-width: 640px) {
-  html{height:100%;height:-webkit-fill-available}
-  body{height:100%;height:-webkit-fill-available}
-  #root{height:100%;height:-webkit-fill-available}
-  .ct-wrap{padding:6px;height:100%;height:-webkit-fill-available}
-  .ct-container{padding:8px;width:calc(100% - 0px);overflow-x:hidden;min-height:100%}
+  html{height:100%;height:100dvh;height:-webkit-fill-available}
+  body{height:100%;height:100dvh;height:-webkit-fill-available;overflow:hidden}
+  #root{height:100%;height:100dvh;height:-webkit-fill-available;overflow:hidden}
+  .ct-wrap{padding:6px;height:100%;height:100dvh;height:-webkit-fill-available;overflow-y:auto;overflow-x:hidden}
+  .ct-container{padding:8px;width:100%;overflow-x:hidden;min-height:calc(100% - 12px)}
   .strategy-overlay{padding:6px}
   .strategy-header{padding:10px 12px}
   .strategy-header h2{font-size:14px}
@@ -196,11 +196,11 @@ body{margin:0;padding:0;min-height:100%;font-family:ui-sans-serif, system-ui, -a
 }
 
 @media (max-width: 480px) {
-  html{height:100%;height:-webkit-fill-available}
-  body{height:100%;height:-webkit-fill-available}
-  #root{height:100%;height:-webkit-fill-available}
-  .ct-wrap{padding:4px;height:100%;height:-webkit-fill-available}
-  .ct-container{padding:6px;border-radius:12px;width:calc(100% - 0px);min-height:100%}
+  html{height:100%;height:100dvh;height:-webkit-fill-available}
+  body{height:100%;height:100dvh;height:-webkit-fill-available;overflow:hidden}
+  #root{height:100%;height:100dvh;height:-webkit-fill-available;overflow:hidden}
+  .ct-wrap{padding:4px;height:100%;height:100dvh;height:-webkit-fill-available;overflow-y:auto;overflow-x:hidden}
+  .ct-container{padding:6px;border-radius:12px;width:100%;min-height:calc(100% - 8px)}
   .stats-bar{padding:4px 6px}
   .stat-value{font-size:12px}
   .stat-label{font-size:7px}
