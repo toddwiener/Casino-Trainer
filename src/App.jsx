@@ -9,6 +9,7 @@ import {
   Square,
   Undo2,
   BookOpen,
+  RotateCcw,
 } from "lucide-react";
 import evLookup from "./data/evLookup.json";
 
@@ -33,7 +34,7 @@ body{margin:0;padding:0;min-height:100%;font-family:ui-sans-serif, system-ui, -a
 #root{min-height:100vh;min-height:-webkit-fill-available;display:flex;flex-direction:column}
 .ct-wrap{flex:1;display:flex;flex-direction:column;color:var(--ink);padding:20px;background:linear-gradient(180deg,var(--bg1),var(--bg2))}
 .ct-wrap.light{--bg1:#f6f9fc; --bg2:#eef3f7; --panel:#ffffff; --ink:#0b1218; --muted:#55616f; --table:#ffffff}
-.ct-container{max-width:1200px;width:100%;margin:0 auto;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.3);border-radius:18px;box-shadow:var(--shadow);padding:16px;position:relative;overflow:hidden}
+.ct-container{max-width:1200px;width:100%;flex:1;display:flex;flex-direction:column;margin:0 auto;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.3);border-radius:18px;box-shadow:var(--shadow);padding:16px;position:relative;overflow:hidden}
 .header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
 .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:19px}
 .pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid rgba(16,185,129,0.2);color:#065f46;box-shadow:0 1px 3px rgba(0,0,0,.06)}
@@ -764,6 +765,16 @@ export default function CasinoTrainer() {
     setLastDecision(null);
     setAwaitingAdvance(false);
     setEvStats(null);
+  }
+
+  function resetStats() {
+    if (confirm("Reset all statistics? This cannot be undone.")) {
+      setStreak(0);
+      setBestStreak(0);
+      setTotalCorrect(0);
+      setTotalAttempts(0);
+      localStorage.setItem("bj_best_streak", "0");
+    }
   }
 
   useEffect(() => {
@@ -1528,6 +1539,13 @@ export default function CasinoTrainer() {
               className="btn"
             >
               <HelpCircle size={16} /> Quick Tips
+            </button>
+            <button
+              onClick={resetStats}
+              className="btn"
+              style={{gridColumn: "1 / -1"}}
+            >
+              <RotateCcw size={16} /> Reset Stats
             </button>
           </div>
         </div>
