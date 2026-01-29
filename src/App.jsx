@@ -8,7 +8,9 @@ import {
   Settings,
   Square,
   Undo2,
+  BookOpen,
 } from "lucide-react";
+import evLookup from "./data/evLookup.json";
 
 // =============================================
 //  Casino Trainer — Blackjack Trainer (single-file React, JS)
@@ -739,6 +741,7 @@ export default function CasinoTrainer() {
   const [evStats, setEvStats] = useState(null);
   const [evLoading, setEvLoading] = useState(false);
   const [showStrategySheet, setShowStrategySheet] = useState(false);
+  const [strategyView, setStrategyView] = useState("action"); // "action" or "ev"
 
   function spawn(m = mode) {
     const s = generateScenario(m);
@@ -1121,6 +1124,22 @@ export default function CasinoTrainer() {
   const infoHint = EV_HINTS[infoKey];
   const extraTip = tipForContext(lastDecision);
 
+  // Helper to get EV for a scenario
+  const getEV = (category, total, dealerUp) => {
+    let key = "";
+    if (category === "HARD") {
+      key = `HARD-${total}-${dealerUp}`;
+    } else if (category === "SOFT") {
+      key = `SOFT-${total}-${dealerUp}`;
+    } else if (category === "PAIR") {
+      key = `PAIR-${total}-${dealerUp}`;
+    }
+
+    const data = evLookup[key];
+    if (!data) return "—";
+    return data.bestEV ? data.bestEV.toFixed(3) : "—";
+  };
+
   // Generate strategy tables
   const generateStrategyTables = () => {
     // Hard totals table (4-20 vs 2-11)
@@ -1162,7 +1181,16 @@ export default function CasinoTrainer() {
       <div className="strategy-modal" onClick={(e) => e.stopPropagation()}>
         <div className="strategy-header">
           <h2>Basic Strategy Sheet (S17/DAS)</h2>
-          <button className="strategy-close" onClick={() => setShowStrategySheet(false)}>×</button>
+          <div style={{display:"flex",gap:"8px",alignItems:"center"}}>
+            <button
+              className="btn"
+              style={{padding:"6px 12px",fontSize:"12px",minHeight:"auto"}}
+              onClick={() => setStrategyView(v => v === "action" ? "ev" : "action")}
+            >
+              {strategyView === "action" ? "Show EV" : "Show Action"}
+            </button>
+            <button className="strategy-close" onClick={() => setShowStrategySheet(false)}>×</button>
+          </div>
         </div>
         <div className="strategy-content">
           {(() => {
@@ -1184,8 +1212,8 @@ export default function CasinoTrainer() {
                         <tr key={row.total}>
                           <th>{row.total}</th>
                           {[2,3,4,5,6,7,8,9,10,11].map(up => (
-                            <td key={up} className={row[up].toLowerCase()}>
-                              {row[up][0]}
+                            <td key={up} className={strategyView === "action" ? row[up].toLowerCase() : ""}>
+                              {strategyView === "action" ? row[up][0] : getEV("HARD", row.total, up)}
                             </td>
                           ))}
                         </tr>
@@ -1209,8 +1237,8 @@ export default function CasinoTrainer() {
                         <tr key={row.total}>
                           <th>A,{row.total - 11}</th>
                           {[2,3,4,5,6,7,8,9,10,11].map(up => (
-                            <td key={up} className={row[up].toLowerCase()}>
-                              {row[up][0]}
+                            <td key={up} className={strategyView === "action" ? row[up].toLowerCase() : ""}>
+                              {strategyView === "action" ? row[up][0] : getEV("SOFT", row.total, up)}
                             </td>
                           ))}
                         </tr>
@@ -1234,8 +1262,10 @@ export default function CasinoTrainer() {
                         <tr key={row.rank}>
                           <th>{row.rank},{row.rank}</th>
                           {[2,3,4,5,6,7,8,9,10,11].map(up => (
-                            <td key={up} className={row[up].toLowerCase()}>
-                              {row[up] === "Split" ? "P" : row[up][0]}
+                            <td key={up} className={strategyView === "action" ? row[up].toLowerCase() : ""}>
+                              {strategyView === "action"
+                                ? (row[up] === "Split" ? "P" : row[up][0])
+                                : getEV("PAIR", row.rank, up)}
                             </td>
                           ))}
                         </tr>
@@ -1481,13 +1511,20 @@ export default function CasinoTrainer() {
               Reset Stats
             </button>
             <button
+              onClick={() => setShowStrategySheet(true)}
+              className="btn"
+            >
+              <BookOpen size={16} /> Strategy Sheet
+            </button>
+            <button
               onClick={() =>
                 alert(`Quick tips:
 • Identify Pair / Soft / Hard first.
 • Always split A,A and 8,8.
 • Hard 11: usually double (not vs Ace).
 • Hard 12: stand vs 4–6, otherwise hit.
-• Soft 18: double vs 3–6, stand vs 2/7/8, hit vs 9/10/A.`)
+• Soft 18: double vs 3–6, stand vs 2/7/8, hit vs 9/10/A.
+• Press ? to open Strategy Sheet`)
               }
               className="btn"
             >
