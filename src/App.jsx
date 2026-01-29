@@ -74,6 +74,29 @@ body{margin:0;font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Rob
 .settings-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:5px 0}
 .settings-title{font-weight:800;font-size:13px;margin-bottom:3px}
 
+/* Strategy Sheet Modal */
+.strategy-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.strategy-modal{background:#fff;border-radius:16px;box-shadow:var(--shadow);max-width:1100px;width:100%;max-height:90vh;overflow-y:auto;position:relative}
+.strategy-header{position:sticky;top:0;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:16px 20px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center;z-index:1}
+.strategy-header h2{margin:0;font-size:20px;font-weight:800}
+.strategy-close{background:rgba(255,255,255,0.2);border:none;color:white;font-size:24px;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
+.strategy-close:hover{background:rgba(255,255,255,0.3)}
+.strategy-content{padding:20px}
+.strategy-section{margin-bottom:24px}
+.strategy-section:last-child{margin-bottom:0}
+.strategy-section h3{margin:0 0 12px 0;font-size:16px;font-weight:700;color:var(--ink)}
+.strategy-table{width:100%;border-collapse:collapse;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.strategy-table th,.strategy-table td{padding:8px 6px;text-align:center;border:1px solid var(--outline);font-weight:600}
+.strategy-table thead th{background:linear-gradient(135deg,#f9fafb,#f3f4f6);color:var(--ink);font-weight:800;position:sticky;top:0;z-index:1}
+.strategy-table tbody th{background:linear-gradient(135deg,#f9fafb,#f3f4f6);color:var(--ink);font-weight:800}
+.strategy-table td.hit{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#78350f}
+.strategy-table td.stand{background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#065f46}
+.strategy-table td.double{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1e40af}
+.strategy-table td.split{background:linear-gradient(135deg,#fce7f3,#fbcfe8);color:#831843}
+.strategy-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;padding:12px;background:#f9fafb;border-radius:8px}
+.strategy-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.strategy-legend-box{width:20px;height:20px;border-radius:4px;border:1px solid rgba(0,0,0,0.1)}
+
 /* Inline feedback (replaces modal) */
 .inline-feedback{margin-top:10px;background:linear-gradient(135deg,#fef2f2,#fff);border-left:4px solid #ef4444;border-radius:10px;padding:10px 12px;box-shadow:0 3px 12px rgba(239,68,68,.12);overflow:hidden}
 .inline-feedback-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:800;font-size:13px}
@@ -89,6 +112,18 @@ body{margin:0;font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Rob
 @media (max-width: 768px) {
   .ct-wrap{padding:10px}
   .ct-container{padding:10px;border-radius:16px;max-width:100%}
+  .strategy-overlay{padding:10px}
+  .strategy-modal{max-height:95vh}
+  .strategy-header{padding:12px 16px}
+  .strategy-header h2{font-size:16px}
+  .strategy-content{padding:16px}
+  .strategy-section{margin-bottom:20px}
+  .strategy-section h3{font-size:14px;margin-bottom:10px}
+  .strategy-table{font-size:10px}
+  .strategy-table th,.strategy-table td{padding:6px 4px}
+  .strategy-legend{gap:8px;padding:10px;margin-top:12px}
+  .strategy-legend-item{font-size:11px}
+  .strategy-legend-box{width:18px;height:18px}
   .stats-bar{margin:-10px -10px 8px -10px;padding:6px 10px;flex-wrap:wrap;gap:6px}
   .stat-group{gap:1px}
   .stat-value{font-size:13px}
@@ -124,6 +159,14 @@ body{margin:0;font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Rob
 @media (max-width: 640px) {
   .ct-wrap{padding:6px}
   .ct-container{padding:8px}
+  .strategy-overlay{padding:6px}
+  .strategy-header{padding:10px 12px}
+  .strategy-header h2{font-size:14px}
+  .strategy-content{padding:12px}
+  .strategy-section{margin-bottom:16px}
+  .strategy-section h3{font-size:13px}
+  .strategy-table{font-size:9px}
+  .strategy-table th,.strategy-table td{padding:5px 3px}
   .stats-bar{margin:-8px -8px 6px -8px;padding:5px 8px}
   .header{flex-wrap:wrap;gap:6px;justify-content:center}
   .brand{font-size:14px;flex:1 1 100%;text-align:center}
@@ -695,6 +738,7 @@ export default function CasinoTrainer() {
   const [lastDecision, setLastDecision] = useState(null);
   const [evStats, setEvStats] = useState(null);
   const [evLoading, setEvLoading] = useState(false);
+  const [showStrategySheet, setShowStrategySheet] = useState(false);
 
   function spawn(m = mode) {
     const s = generateScenario(m);
@@ -767,12 +811,12 @@ export default function CasinoTrainer() {
         e.preventDefault();
         setMoreInfo(null);
         setShowSettings(false);
+        setShowStrategySheet(false);
       }
-      // Help/strategy sheet (future feature)
-      else if (key === '?') {
+      // Strategy sheet toggle
+      else if (key === '?' || key === '/') {
         e.preventDefault();
-        // TODO: Show strategy sheet modal when implemented
-        console.log('Strategy sheet shortcut pressed (not yet implemented)');
+        setShowStrategySheet(prev => !prev);
       }
     };
 
@@ -1077,9 +1121,160 @@ export default function CasinoTrainer() {
   const infoHint = EV_HINTS[infoKey];
   const extraTip = tipForContext(lastDecision);
 
+  // Generate strategy tables
+  const generateStrategyTables = () => {
+    // Hard totals table (4-20 vs 2-11)
+    const hardTotals = [];
+    for (let total = 20; total >= 4; total--) {
+      const row = { total };
+      for (let up = 2; up <= 11; up++) {
+        row[up] = hardStrategy(total, up);
+      }
+      hardTotals.push(row);
+    }
+
+    // Soft totals table (13-21 vs 2-11)
+    const softTotals = [];
+    for (let total = 21; total >= 13; total--) {
+      const row = { total };
+      for (let up = 2; up <= 11; up++) {
+        row[up] = softStrategy(total, up);
+      }
+      softTotals.push(row);
+    }
+
+    // Pairs table (A,A through 2,2 vs 2-11)
+    const pairs = [];
+    const pairRanks = ["A", "10", "9", "8", "7", "6", "5", "4", "3", "2"];
+    for (const rank of pairRanks) {
+      const row = { rank };
+      for (let up = 2; up <= 11; up++) {
+        row[up] = pairStrategy(rank, up);
+      }
+      pairs.push(row);
+    }
+
+    return { hardTotals, softTotals, pairs };
+  };
+
+  const strategySheet = showStrategySheet && (
+    <div className="strategy-overlay" onClick={() => setShowStrategySheet(false)}>
+      <div className="strategy-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="strategy-header">
+          <h2>Basic Strategy Sheet (S17/DAS)</h2>
+          <button className="strategy-close" onClick={() => setShowStrategySheet(false)}>×</button>
+        </div>
+        <div className="strategy-content">
+          {(() => {
+            const { hardTotals, softTotals, pairs } = generateStrategyTables();
+            return (
+              <>
+                {/* Hard Totals */}
+                <div className="strategy-section">
+                  <h3>Hard Totals</h3>
+                  <table className="strategy-table">
+                    <thead>
+                      <tr>
+                        <th>Your Hand</th>
+                        {[2,3,4,5,6,7,8,9,10,"A"].map(up => <th key={up}>{up}</th>)}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {hardTotals.map(row => (
+                        <tr key={row.total}>
+                          <th>{row.total}</th>
+                          {[2,3,4,5,6,7,8,9,10,11].map(up => (
+                            <td key={up} className={row[up].toLowerCase()}>
+                              {row[up][0]}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Soft Totals */}
+                <div className="strategy-section">
+                  <h3>Soft Totals (A + X)</h3>
+                  <table className="strategy-table">
+                    <thead>
+                      <tr>
+                        <th>Your Hand</th>
+                        {[2,3,4,5,6,7,8,9,10,"A"].map(up => <th key={up}>{up}</th>)}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {softTotals.map(row => (
+                        <tr key={row.total}>
+                          <th>A,{row.total - 11}</th>
+                          {[2,3,4,5,6,7,8,9,10,11].map(up => (
+                            <td key={up} className={row[up].toLowerCase()}>
+                              {row[up][0]}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pairs */}
+                <div className="strategy-section">
+                  <h3>Pairs</h3>
+                  <table className="strategy-table">
+                    <thead>
+                      <tr>
+                        <th>Your Hand</th>
+                        {[2,3,4,5,6,7,8,9,10,"A"].map(up => <th key={up}>{up}</th>)}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pairs.map(row => (
+                        <tr key={row.rank}>
+                          <th>{row.rank},{row.rank}</th>
+                          {[2,3,4,5,6,7,8,9,10,11].map(up => (
+                            <td key={up} className={row[up].toLowerCase()}>
+                              {row[up] === "Split" ? "P" : row[up][0]}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Legend */}
+                <div className="strategy-legend">
+                  <div className="strategy-legend-item">
+                    <div className="strategy-legend-box" style={{background:"linear-gradient(135deg,#fef3c7,#fde68a)"}}></div>
+                    <span>H = Hit</span>
+                  </div>
+                  <div className="strategy-legend-item">
+                    <div className="strategy-legend-box" style={{background:"linear-gradient(135deg,#d1fae5,#a7f3d0)"}}></div>
+                    <span>S = Stand</span>
+                  </div>
+                  <div className="strategy-legend-item">
+                    <div className="strategy-legend-box" style={{background:"linear-gradient(135deg,#dbeafe,#bfdbfe)"}}></div>
+                    <span>D = Double</span>
+                  </div>
+                  <div className="strategy-legend-item">
+                    <div className="strategy-legend-box" style={{background:"linear-gradient(135deg,#fce7f3,#fbcfe8)"}}></div>
+                    <span>P = Split</span>
+                  </div>
+                </div>
+              </>
+            );
+          })()}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className={`ct-wrap ${theme === "light" ? "light" : ""}`}>
       <style>{styles}</style>
+      {strategySheet}
       <div className="ct-container">
         {/* Unified Stats Bar (sticky) */}
         <div className="stats-bar">
