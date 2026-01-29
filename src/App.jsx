@@ -170,11 +170,11 @@ body{margin:0;font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Rob
   .strategy-table{font-size:9px}
   .strategy-table th,.strategy-table td{padding:5px 3px}
   .stats-bar{margin:-8px -8px 6px -8px;padding:5px 8px}
-  .header{flex-wrap:wrap;gap:6px;justify-content:center}
-  .brand{font-size:14px;flex:1 1 100%;text-align:center}
-  .stats{width:100%;justify-content:center}
-  .select{padding:4px 8px;font-size:12px}
-  .btn{padding:6px 8px;font-size:11px}
+  .header{flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:8px}
+  .brand{font-size:14px;flex:1 1 100%;text-align:center;order:1}
+  .stats{width:100%;justify-content:center;order:2;gap:10px}
+  .select{padding:6px 10px;font-size:13px;min-width:100px;font-weight:600}
+  .btn{padding:8px 10px;font-size:12px}
   .rules{flex-wrap:wrap;font-size:10px;justify-content:center;margin:3px 0 6px}
   .grid{display:flex;flex-direction:column;gap:8px}
   .table{padding:8px}
@@ -1127,17 +1127,34 @@ export default function CasinoTrainer() {
   // Helper to get EV for a scenario
   const getEV = (category, total, dealerUp) => {
     let key = "";
+    const dealerRank = dealerUp === 11 ? "A" : String(dealerUp);
+
     if (category === "HARD") {
-      key = `HARD-${total}-${dealerUp}`;
+      // For hard totals, construct a representative hand
+      // Use 10 + (total-10) for totals >= 12, otherwise use smaller combos
+      if (total >= 12) {
+        const card2 = total - 10;
+        const sorted = card2 <= 10 ? [String(card2), "10"].sort().join(',') : ["10", "10"].join(',');
+        key = `${sorted}vs${dealerRank}`;
+      } else {
+        const card1 = Math.floor(total / 2);
+        const card2 = total - card1;
+        const sorted = [String(card1), String(card2)].sort().join(',');
+        key = `${sorted}vs${dealerRank}`;
+      }
     } else if (category === "SOFT") {
-      key = `SOFT-${total}-${dealerUp}`;
+      // For soft totals, use A + (total - 11)
+      const otherCard = total - 11;
+      key = `A,${otherCard}vs${dealerRank}`;
     } else if (category === "PAIR") {
-      key = `PAIR-${total}-${dealerUp}`;
+      // For pairs, use rank,rankvsDealerRank
+      key = `${total},${total}vs${dealerRank}`;
     }
 
     const data = evLookup[key];
-    if (!data) return "—";
-    return data.bestEV ? data.bestEV.toFixed(3) : "—";
+    if (!data || !data.evValues || !data.bestAction) return "—";
+    const bestEV = data.evValues[data.bestAction]?.ev;
+    return bestEV !== undefined ? bestEV.toFixed(3) : "—";
   };
 
   // Generate strategy tables
