@@ -336,7 +336,7 @@ const SpeedTrial = ({ generateScenario, bestAction, onClose }) => {
                           )}
                         </div>
                         <div className="result-hand">
-                          Hand {handToString(d.scenario.player)} vs {rankToString(d.scenario.dealerUp)}
+                          Hand {handToString(d.scenario.player)} vs {d.scenario.dealerUp.rank}
                         </div>
                         <div className="result-decision">
                           {d.chosen} {!d.isCorrect && `(should be ${d.correct})`}
