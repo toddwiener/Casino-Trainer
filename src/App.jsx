@@ -12,6 +12,8 @@ import {
   RotateCcw,
   AlertCircle,
   Zap,
+  GraduationCap,
+  ChevronDown,
 } from "lucide-react";
 import evLookup from "./data/evLookup.json";
 import SpeedTrial from "./SpeedTrial";
@@ -85,6 +87,10 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
 .settings-pop{position:absolute;top:52px;right:14px;background:#fff;border:1px solid var(--outline);border-radius:10px;box-shadow:var(--shadow);padding:10px 10px;min-width:260px;z-index:10}
 .settings-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:5px 0}
 .settings-title{font-weight:800;font-size:13px;margin-bottom:3px}
+.learning-tools-menu{position:absolute;bottom:calc(100% + 8px);left:0;background:#fff;border:1px solid var(--outline);border-radius:10px;box-shadow:var(--shadow);min-width:240px;z-index:10;overflow:hidden}
+.learning-tools-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border:none;background:transparent;width:100%;text-align:left;cursor:pointer;font-size:14px;font-weight:600;color:var(--ink);transition:background 0.15s}
+.learning-tools-item:hover{background:rgba(76,201,176,0.08)}
+.learning-tools-item:not(:last-child){border-bottom:1px solid var(--outline)}
 
 /* Strategy Sheet Modal */
 .strategy-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
@@ -808,6 +814,7 @@ export default function CasinoTrainer() {
   const [handScores, setHandScores] = useState([{ c: 0, t: 0 }]);
   const [locked, setLocked] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showLearningTools, setShowLearningTools] = useState(false);
   const [history, setHistory] = useState([]);
   const [flashStreak, setFlashStreak] = useState(false);
   const [moreInfo, setMoreInfo] = useState(null);
@@ -918,6 +925,7 @@ export default function CasinoTrainer() {
         setMoreInfo(null);
         setShowSettings(false);
         setShowStrategySheet(false);
+        setShowLearningTools(false);
       }
       // Strategy sheet toggle
       else if (key === '?' || key === '/') {
@@ -929,6 +937,21 @@ export default function CasinoTrainer() {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [locked, awaitingAdvance, currentHand, history.length]);
+
+  // Close learning tools menu on click outside
+  useEffect(() => {
+    if (!showLearningTools) return;
+
+    const handleClickOutside = (e) => {
+      // Close if clicking outside the menu and button
+      if (!e.target.closest('.learning-tools-menu') && !e.target.closest('.btn')) {
+        setShowLearningTools(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showLearningTools]);
 
   function continueAdvance() {
     // Clear feedback and reset state when advancing to next hand
@@ -1235,6 +1258,59 @@ export default function CasinoTrainer() {
           <option value="light">Light</option>
         </select>
       </div>
+      <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid var(--outline)" }}>
+        <button
+          onClick={() => {
+            resetStats();
+            setShowSettings(false);
+          }}
+          className="btn"
+          style={{
+            width: "100%",
+            justifyContent: "center",
+            background: "rgba(214, 69, 69, 0.1)",
+            color: "var(--error)",
+            borderColor: "var(--error)"
+          }}
+        >
+          <RotateCcw size={16} /> Reset Stats
+        </button>
+      </div>
+    </div>
+  );
+
+  const learningToolsMenu = (
+    <div className="learning-tools-menu">
+      <button
+        className="learning-tools-item"
+        onClick={() => {
+          setShowStrategySheet(true);
+          setShowLearningTools(false);
+        }}
+      >
+        <BookOpen size={18} />
+        <span>Strategy Sheet</span>
+      </button>
+      <button
+        className="learning-tools-item"
+        onClick={() => {
+          setShowQuickTips(true);
+          setShowLearningTools(false);
+        }}
+      >
+        <HelpCircle size={18} />
+        <span>Quick Tips</span>
+      </button>
+      <button
+        className="learning-tools-item"
+        onClick={() => {
+          setShowMistakes(true);
+          setShowLearningTools(false);
+        }}
+      >
+        <AlertCircle size={18} />
+        <span>Review Mistakes {mistakes.length > 0 && `(${mistakes.length})`}</span>
+      </button>
     </div>
   );
 
@@ -1875,44 +1951,34 @@ export default function CasinoTrainer() {
                 <span className="kbd-hint">{awaitingAdvance ? "Space" : "N"}</span>
               </button>
             </div>
-            <button
-              onClick={() => setShowSpeedTrial(true)}
-              className="btn"
-              style={{
-                background: "#ffffff",
-                color: "var(--ink)",
-                borderLeft: "3px solid var(--warning)",
-                fontWeight: "700",
-                width: "100%"
-              }}
-            >
-              <Zap size={16} /> Speed Trial
-            </button>
-            <button
-              onClick={() => setShowStrategySheet(true)}
-              className="btn"
-            >
-              <BookOpen size={16} /> Strategy Sheet
-            </button>
-            <button
-              onClick={() => setShowQuickTips(true)}
-              className="btn"
-            >
-              <HelpCircle size={16} /> Quick Tips
-            </button>
-            <button
-              onClick={() => setShowMistakes(true)}
-              className="btn"
-            >
-              <AlertCircle size={16} /> Review Mistakes {mistakes.length > 0 && `(${mistakes.length})`}
-            </button>
-            <button
-              onClick={resetStats}
-              className="btn"
-              style={{gridColumn: "1 / -1"}}
-            >
-              <RotateCcw size={16} /> Reset Stats
-            </button>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              <button
+                onClick={() => setShowSpeedTrial(true)}
+                className="btn"
+                style={{
+                  flex: 1,
+                  background: "#ffffff",
+                  color: "var(--ink)",
+                  borderLeft: "3px solid var(--warning)",
+                  fontWeight: "700"
+                }}
+              >
+                <Zap size={16} /> Speed Trial
+              </button>
+              <div style={{ position: "relative", flex: 1 }}>
+                <button
+                  onClick={() => setShowLearningTools((v) => !v)}
+                  className="btn"
+                  style={{
+                    width: "100%",
+                    justifyContent: "center"
+                  }}
+                >
+                  <GraduationCap size={16} /> Learning Tools <ChevronDown size={14} style={{ marginLeft: "4px" }} />
+                </button>
+                {showLearningTools && learningToolsMenu}
+              </div>
+            </div>
           </div>
         </div>
 
