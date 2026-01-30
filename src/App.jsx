@@ -11,8 +11,10 @@ import {
   BookOpen,
   RotateCcw,
   AlertCircle,
+  Zap,
 } from "lucide-react";
 import evLookup from "./data/evLookup.json";
+import SpeedTrial from "./SpeedTrial";
 
 // =============================================
 //  Casino Trainer — Blackjack Trainer (single-file React, JS)
@@ -102,6 +104,46 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
 .strategy-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
 .strategy-legend-box{width:20px;height:20px;border-radius:4px;border:1px solid rgba(0,0,0,0.1)}
 
+/* Speed Trial styles */
+.speed-trial-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.speed-trial-modal{background:#fff;border-radius:16px;box-shadow:var(--shadow);max-width:900px;width:100%;max-height:90vh;overflow-y:auto}
+.speed-trial-header{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#78350f;padding:16px 20px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1}
+.speed-trial-header h2{margin:0;font-size:20px;font-weight:800}
+.speed-trial-content{position:relative}
+.speed-trial-modes{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px}
+.speed-trial-mode{border:2px solid var(--outline);border-radius:12px;padding:16px;background:#fff;transition:all 0.2s}
+.speed-trial-mode:hover{border-color:var(--brand);box-shadow:0 4px 12px rgba(16,185,129,0.15)}
+.mode-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--brand)}
+.mode-header h3{margin:0;font-size:16px;font-weight:800}
+.mode-desc{margin:4px 0;font-size:13px;color:var(--ink)}
+.mode-target{margin:4px 0 12px;font-size:11px;color:var(--muted)}
+.speed-trial-scoring{background:#f9fafb;border-radius:8px;padding:12px 16px;border:1px solid var(--outline)}
+.speed-trial-scoring h4{margin:0 0 8px 0;font-size:13px;font-weight:800}
+.speed-trial-scoring ul{margin:0;padding-left:20px;font-size:12px;line-height:1.7}
+.speed-trial-progress{background:rgba(255,255,255,0.25);padding:4px 12px;border-radius:999px;font-weight:700;font-size:13px}
+.speed-trial-timer{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.25);padding:6px 12px;border-radius:999px;font-weight:700;font-size:14px}
+.speed-trial-score{background:rgba(255,255,255,0.25);padding:6px 12px;border-radius:999px;font-weight:700;font-size:14px}
+.speed-trial-results{background:#f9fafb;border-radius:12px;padding:20px;border:1px solid var(--outline)}
+.results-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.result-stat{text-align:center;padding:16px;background:#fff;border-radius:10px;border:1px solid var(--outline)}
+.result-value{font-size:32px;font-weight:800;color:var(--brand);margin-bottom:4px}
+.result-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+.results-details h4{margin:0 0 12px 0;font-size:14px;font-weight:800}
+.results-list{max-height:400px;overflow-y:auto;background:#fff;border-radius:8px;padding:8px;border:1px solid var(--outline)}
+.result-item{display:grid;grid-template-columns:24px 1fr auto 60px 60px;gap:8px;align-items:center;padding:8px;border-radius:6px;margin-bottom:4px;font-size:12px;transition:background 0.2s}
+.result-item:hover{background:#f9fafb}
+.result-item.correct{border-left:3px solid #10b981}
+.result-item.incorrect{border-left:3px solid #ef4444}
+.result-icon{display:flex;align-items:center}
+.result-item.correct .result-icon{color:#10b981}
+.result-item.incorrect .result-icon{color:#ef4444}
+.result-hand{font-weight:600}
+.result-decision{color:var(--muted);font-size:11px}
+.result-time{text-align:right;font-weight:600}
+.result-points{text-align:right;font-weight:800;padding:4px 8px;border-radius:4px}
+.result-points.positive{color:#059669;background:rgba(16,185,129,0.1)}
+.result-points.negative{color:#dc2626;background:rgba(239,68,68,0.1)}
+
 /* Inline feedback (replaces modal) */
 .inline-feedback{margin-top:10px;background:linear-gradient(135deg,#fef2f2,#fff);border-left:4px solid #ef4444;border-radius:10px;padding:10px 12px;box-shadow:0 3px 12px rgba(239,68,68,.12);overflow:hidden}
 .inline-feedback-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:800;font-size:13px}
@@ -120,6 +162,20 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
   .strategy-overlay{padding:10px}
   .strategy-modal{max-height:95vh}
   .strategy-header{padding:12px 16px}
+  .speed-trial-overlay{padding:10px}
+  .speed-trial-modal{max-height:95vh}
+  .speed-trial-header{padding:12px 16px;font-size:16px}
+  .speed-trial-modes{grid-template-columns:1fr;gap:12px}
+  .speed-trial-mode{padding:12px}
+  .mode-header h3{font-size:14px}
+  .mode-desc{font-size:12px}
+  .speed-trial-timer{font-size:12px;padding:4px 10px}
+  .speed-trial-score{font-size:12px;padding:4px 10px}
+  .speed-trial-progress{font-size:12px;padding:3px 10px}
+  .results-summary{grid-template-columns:1fr;gap:12px}
+  .result-value{font-size:24px}
+  .result-item{grid-template-columns:20px 1fr auto 50px 50px;font-size:11px;padding:6px}
+  .results-list{max-height:300px}
   .strategy-header h2{font-size:16px}
   .strategy-content{padding:16px}
   .strategy-section{margin-bottom:20px}
@@ -761,6 +817,7 @@ export default function CasinoTrainer() {
   });
   const [showMistakes, setShowMistakes] = useState(false);
   const [showQuickTips, setShowQuickTips] = useState(false);
+  const [showSpeedTrial, setShowSpeedTrial] = useState(false);
 
   function spawn(m = mode) {
     const s = generateScenario(m);
@@ -1579,6 +1636,13 @@ export default function CasinoTrainer() {
       {strategySheet}
       {mistakesModal}
       {quickTipsModal}
+      {showSpeedTrial && (
+        <SpeedTrial
+          generateScenario={generateScenario}
+          bestAction={bestAction}
+          onClose={() => setShowSpeedTrial(false)}
+        />
+      )}
       <div className="ct-container">
         {/* Unified Stats Bar (sticky) */}
         <div className="stats-bar">
@@ -1757,6 +1821,19 @@ export default function CasinoTrainer() {
               <Repeat size={16} />{" "}
               {awaitingAdvance ? "Continue" : "Next Scenario"}
               <span className="kbd-hint">{awaitingAdvance ? "Space" : "N"}</span>
+            </button>
+            <button
+              onClick={() => setShowSpeedTrial(true)}
+              className="btn"
+              style={{
+                gridColumn: "1 / -1",
+                background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
+                color: "#78350f",
+                borderColor: "transparent",
+                fontWeight: "800"
+              }}
+            >
+              <Zap size={16} /> Speed Trial
             </button>
             <button
               onClick={() => setShowStrategySheet(true)}
