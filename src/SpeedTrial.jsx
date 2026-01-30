@@ -41,10 +41,11 @@ const SpeedTrial = ({ generateScenario, bestAction, onClose }) => {
 
   // Keyboard shortcuts
   useEffect(() => {
-    if (view !== "playing" || !currentScenario) return;
+    if (view !== "playing" || !scenarios[currentIndex]) return;
 
     const handleKeyPress = (e) => {
       const key = e.key.toLowerCase();
+      const scenario = scenarios[currentIndex];
 
       if (key === "h") {
         e.preventDefault();
@@ -55,7 +56,7 @@ const SpeedTrial = ({ generateScenario, bestAction, onClose }) => {
       } else if (key === "d") {
         e.preventDefault();
         makeDecision("Double");
-      } else if (key === "p" && currentScenario && isPair(currentScenario.player)) {
+      } else if (key === "p" && scenario && isPair(scenario.player)) {
         e.preventDefault();
         makeDecision("Split");
       }
@@ -63,7 +64,7 @@ const SpeedTrial = ({ generateScenario, bestAction, onClose }) => {
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [view, currentScenario, decisions, score]);
+  }, [view, scenarios, currentIndex, decisions, score]);
 
   const startTrial = (type) => {
     const count = type === "sprint" ? 10 : 50;
