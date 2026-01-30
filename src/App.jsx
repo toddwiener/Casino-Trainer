@@ -30,12 +30,12 @@ import evLookup from "./data/evLookup.json";
 const styles = `
 :root{ --bg1:#0d1117; --bg2:#111827; --panel:#ffffff; --ink:#101418; --muted:#5f6b7a; --brand:#10b981; --brand-ink:#059669; --outline:#e7ecef; --table:#f6faf8; --shadow:0 20px 40px rgba(0,0,0,.15), 0 8px 16px rgba(0,0,0,.08); }
 *{box-sizing:border-box}
-html{height:100%;-webkit-text-size-adjust:100%}
-body{margin:0;padding:0;min-height:100%;font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";overflow-x:hidden}
-#root{min-height:100vh;min-height:-webkit-fill-available;display:flex;flex-direction:column}
-.ct-wrap{flex:1;display:flex;flex-direction:column;color:var(--ink);padding:20px;background:linear-gradient(180deg,var(--bg1),var(--bg2))}
+html{height:100%;width:100%;-webkit-text-size-adjust:100%}
+body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";overflow-x:hidden}
+#root{min-height:100vh;min-height:-webkit-fill-available;width:100%;display:flex;flex-direction:column}
+.ct-wrap{flex:1;display:flex;flex-direction:column;align-items:center;color:var(--ink);padding:20px;background:linear-gradient(180deg,var(--bg1),var(--bg2))}
 .ct-wrap.light{--bg1:#f6f9fc; --bg2:#eef3f7; --panel:#ffffff; --ink:#0b1218; --muted:#55616f; --table:#ffffff}
-.ct-container{max-width:1200px;width:100%;margin:0 auto;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.3);border-radius:18px;box-shadow:var(--shadow);padding:16px;position:relative;overflow:hidden;min-height:100%}
+.ct-container{max-width:1600px;width:100%;margin:0 auto;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.3);border-radius:18px;box-shadow:var(--shadow);padding:16px;position:relative;overflow:hidden;min-height:100%}
 .header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
 .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:19px}
 .pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid rgba(16,185,129,0.2);color:#065f46;box-shadow:0 1px 3px rgba(0,0,0,.06)}
@@ -52,7 +52,7 @@ body{margin:0;padding:0;min-height:100%;font-family:ui-sans-serif, system-ui, -a
 .card .rank-btm{font-weight:800;font-size:13px;transform:rotate(180deg)}
 .card.back{background:repeating-linear-gradient(45deg,#c0ced0,#c0ced0 7px,#b3c4c7 7px,#b3c4c7 14px);border-color:#a8babd}
 .actions{display:grid;grid-template-columns:repeat(5,minmax(100px,1fr));gap:8px;margin-top:10px}
-.btn{padding:9px 10px;border-radius:10px;border:1px solid var(--outline);background:linear-gradient(180deg,#ffffff,#f9fafb);font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:all 0.15s cubic-bezier(0.4,0,0.2,1)}
+.btn{padding:9px 10px;border-radius:10px;border:1px solid var(--outline);background:linear-gradient(180deg,#ffffff,#f9fafb);font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:all 0.15s cubic-bezier(0.4,0,0.2,1);display:inline-flex;align-items:center;gap:6px}
 .btn:hover{transform:translateY(-1px);box-shadow:0 4px 8px rgba(0,0,0,.1)}
 .btn.primary{background:linear-gradient(135deg,#10b981,#059669);color:white;border-color:transparent;box-shadow:0 2px 8px rgba(16,185,129,0.3)}
 .btn.primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,185,129,0.4)}
@@ -176,9 +176,9 @@ body{margin:0;padding:0;min-height:100%;font-family:ui-sans-serif, system-ui, -a
   .strategy-table{font-size:9px}
   .strategy-table th,.strategy-table td{padding:5px 3px}
   .stats-bar{margin:-8px -8px 6px -8px;padding:5px 8px}
-  .header{flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:8px}
-  .brand{font-size:14px;flex:1 1 100%;text-align:center;order:1}
-  .stats{width:100%;justify-content:center;order:2;gap:10px}
+  .header{flex-wrap:wrap;gap:8px;justify-content:space-between;margin-bottom:8px}
+  .brand{font-size:14px;flex:1 1 100%;text-align:left;order:1}
+  .stats{justify-content:flex-end;order:2;gap:10px}
   .select{padding:6px 10px;font-size:13px;min-width:100px;font-weight:600}
   .btn{padding:8px 10px;font-size:12px}
   .rules{flex-wrap:wrap;font-size:10px;justify-content:center;margin:3px 0 6px}
@@ -760,6 +760,7 @@ export default function CasinoTrainer() {
     }
   });
   const [showMistakes, setShowMistakes] = useState(false);
+  const [showQuickTips, setShowQuickTips] = useState(false);
 
   function spawn(m = mode) {
     const s = generateScenario(m);
@@ -864,12 +865,17 @@ export default function CasinoTrainer() {
   }, [locked, awaitingAdvance, currentHand, history.length]);
 
   function continueAdvance() {
+    // Clear feedback and reset state when advancing to next hand
+    setMoreInfo(null);
+    setMessage("");
+    setAwaitingAdvance(false);
+    setLocked(false);
+
     if (active < hands.length - 1) {
       setActive((prev) => prev + 1);
     } else {
       spawn();
     }
-    setAwaitingAdvance(false);
   }
 
   function finishAndAdvance(lastMoveCorrect, finalScore, reason) {
@@ -1410,7 +1416,7 @@ export default function CasinoTrainer() {
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"start",marginBottom:"8px"}}>
                       <div>
                         <div style={{fontSize:"12px",fontWeight:"700",color:"#991b1b"}}>
-                          {mistake.category} - {mistake.difficulty}
+                          {mistake.category === 'HARD' ? 'Hard Total' : mistake.category === 'SOFT' ? 'Soft Total' : 'Pair'} ({mistake.difficulty} mode)
                         </div>
                         <div style={{fontSize:"11px",color:"#6b7280"}}>
                           {new Date(mistake.timestamp).toLocaleDateString()} {new Date(mistake.timestamp).toLocaleTimeString()}
@@ -1454,11 +1460,125 @@ export default function CasinoTrainer() {
     </div>
   );
 
+  const quickTipsModal = showQuickTips && (
+    <div className="strategy-overlay" onClick={() => setShowQuickTips(false)}>
+      <div className="strategy-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="strategy-header">
+          <h2>Quick Tips</h2>
+          <button className="strategy-close" onClick={() => setShowQuickTips(false)}>×</button>
+        </div>
+        <div className="strategy-content">
+          {/* Keyboard Shortcuts */}
+          <div style={{marginBottom:"24px"}}>
+            <h3 style={{margin:"0 0 12px",fontSize:"14px",fontWeight:"700",color:"#10b981"}}>⌨️ Keyboard Shortcuts</h3>
+            <div style={{display:"grid",gap:"10px"}}>
+              <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"10px",background:"#f9fafb",borderRadius:"8px"}}>
+                <kbd style={{padding:"4px 8px",background:"white",border:"1px solid #e5e7eb",borderRadius:"6px",fontWeight:"700",fontSize:"12px",minWidth:"32px",textAlign:"center"}}>H</kbd>
+                <span style={{fontSize:"13px",color:"#374151"}}>Hit - Take another card</span>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"10px",background:"#f9fafb",borderRadius:"8px"}}>
+                <kbd style={{padding:"4px 8px",background:"white",border:"1px solid #e5e7eb",borderRadius:"6px",fontWeight:"700",fontSize:"12px",minWidth:"32px",textAlign:"center"}}>S</kbd>
+                <span style={{fontSize:"13px",color:"#374151"}}>Stand - Keep your current hand</span>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"10px",background:"#f9fafb",borderRadius:"8px"}}>
+                <kbd style={{padding:"4px 8px",background:"white",border:"1px solid #e5e7eb",borderRadius:"6px",fontWeight:"700",fontSize:"12px",minWidth:"32px",textAlign:"center"}}>D</kbd>
+                <span style={{fontSize:"13px",color:"#374151"}}>Double - Double your bet and take one card</span>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"10px",background:"#f9fafb",borderRadius:"8px"}}>
+                <kbd style={{padding:"4px 8px",background:"white",border:"1px solid #e5e7eb",borderRadius:"6px",fontWeight:"700",fontSize:"12px",minWidth:"32px",textAlign:"center"}}>P</kbd>
+                <span style={{fontSize:"13px",color:"#374151"}}>Split - Split pairs into two hands</span>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"10px",background:"#f9fafb",borderRadius:"8px"}}>
+                <kbd style={{padding:"4px 8px",background:"white",border:"1px solid #e5e7eb",borderRadius:"6px",fontWeight:"700",fontSize:"12px",minWidth:"32px",textAlign:"center"}}>Space</kbd>
+                <span style={{fontSize:"13px",color:"#374151"}}>Continue to next hand</span>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"10px",background:"#f9fafb",borderRadius:"8px"}}>
+                <kbd style={{padding:"4px 8px",background:"white",border:"1px solid #e5e7eb",borderRadius:"6px",fontWeight:"700",fontSize:"12px",minWidth:"32px",textAlign:"center"}}>N</kbd>
+                <span style={{fontSize:"13px",color:"#374151"}}>New scenario</span>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"10px",background:"#f9fafb",borderRadius:"8px"}}>
+                <kbd style={{padding:"4px 8px",background:"white",border:"1px solid #e5e7eb",borderRadius:"6px",fontWeight:"700",fontSize:"12px",minWidth:"32px",textAlign:"center"}}>U</kbd>
+                <span style={{fontSize:"13px",color:"#374151"}}>Undo last action</span>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"10px",background:"#f9fafb",borderRadius:"8px"}}>
+                <kbd style={{padding:"4px 8px",background:"white",border:"1px solid #e5e7eb",borderRadius:"6px",fontWeight:"700",fontSize:"12px",minWidth:"32px",textAlign:"center"}}>Esc</kbd>
+                <span style={{fontSize:"13px",color:"#374151"}}>Close modals</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Strategy Tips */}
+          <div style={{marginBottom:"24px"}}>
+            <h3 style={{margin:"0 0 12px",fontSize:"14px",fontWeight:"700",color:"#3b82f6"}}>🎯 Strategy Tips</h3>
+            <div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
+              <div style={{padding:"12px",background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:"10px"}}>
+                <div style={{fontSize:"13px",fontWeight:"600",color:"#1e40af",marginBottom:"4px"}}>Soft vs Hard Totals</div>
+                <div style={{fontSize:"12px",color:"#1e3a8a",lineHeight:"1.5"}}>
+                  A soft hand contains an Ace counted as 11 (e.g., A+6=soft 17). Hard hands either have no Ace or the Ace counts as 1. Soft hands are more flexible!
+                </div>
+              </div>
+              <div style={{padding:"12px",background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:"10px"}}>
+                <div style={{fontSize:"13px",fontWeight:"600",color:"#1e40af",marginBottom:"4px"}}>Dealer Bust Cards</div>
+                <div style={{fontSize:"12px",color:"#1e3a8a",lineHeight:"1.5"}}>
+                  When dealer shows 2-6, they're more likely to bust. Stand more often with weaker hands. When dealer shows 7-A, they have a strong hand - hit more aggressively.
+                </div>
+              </div>
+              <div style={{padding:"12px",background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:"10px"}}>
+                <div style={{fontSize:"13px",fontWeight:"600",color:"#1e40af",marginBottom:"4px"}}>Doubling Down</div>
+                <div style={{fontSize:"12px",color:"#1e3a8a",lineHeight:"1.5"}}>
+                  Double down when you have a strong advantage: hard 11 against any dealer card, hard 10 against 2-9, and soft hands against weak dealer cards (2-6).
+                </div>
+              </div>
+              <div style={{padding:"12px",background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:"10px"}}>
+                <div style={{fontSize:"13px",fontWeight:"600",color:"#1e40af",marginBottom:"4px"}}>Splitting Pairs</div>
+                <div style={{fontSize:"12px",color:"#1e3a8a",lineHeight:"1.5"}}>
+                  Always split Aces and 8s. Never split 5s or 10s. Other pairs depend on the dealer's upcard - check the Strategy Sheet for specifics!
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Learning Tips */}
+          <div>
+            <h3 style={{margin:"0 0 12px",fontSize:"14px",fontWeight:"700",color:"#8b5cf6"}}>📚 Learning Tips</h3>
+            <div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
+              <div style={{padding:"12px",background:"#f5f3ff",border:"1px solid #ddd6fe",borderRadius:"10px"}}>
+                <div style={{fontSize:"13px",fontWeight:"600",color:"#6d28d9",marginBottom:"4px"}}>Start with Easy Mode</div>
+                <div style={{fontSize:"12px",color:"#5b21b6",lineHeight:"1.5"}}>
+                  Master the fundamentals in Easy mode before moving to Medium and Hard. Build your streak and confidence first!
+                </div>
+              </div>
+              <div style={{padding:"12px",background:"#f5f3ff",border:"1px solid #ddd6fe",borderRadius:"10px"}}>
+                <div style={{fontSize:"13px",fontWeight:"600",color:"#6d28d9",marginBottom:"4px"}}>Review Your Mistakes</div>
+                <div style={{fontSize:"12px",color:"#5b21b6",lineHeight:"1.5"}}>
+                  Click "Review Mistakes" to see patterns in your errors. Focus on the hand types you struggle with most.
+                </div>
+              </div>
+              <div style={{padding:"12px",background:"#f5f3ff",border:"1px solid #ddd6fe",borderRadius:"10px"}}>
+                <div style={{fontSize:"13px",fontWeight:"600",color:"#6d28d9",marginBottom:"4px"}}>Use the Strategy Sheet</div>
+                <div style={{fontSize:"12px",color:"#5b21b6",lineHeight:"1.5"}}>
+                  Reference the Strategy Sheet to memorize optimal plays. Over time, these decisions will become automatic.
+                </div>
+              </div>
+              <div style={{padding:"12px",background:"#f5f3ff",border:"1px solid #ddd6fe",borderRadius:"10px"}}>
+                <div style={{fontSize:"13px",fontWeight:"600",color:"#6d28d9",marginBottom:"4px"}}>Practice Daily</div>
+                <div style={{fontSize:"12px",color:"#5b21b6",lineHeight:"1.5"}}>
+                  Even 5-10 minutes of daily practice will dramatically improve your skills. Consistency beats intensity!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className={`ct-wrap ${theme === "light" ? "light" : ""}`}>
       <style>{styles}</style>
       {strategySheet}
       {mistakesModal}
+      {quickTipsModal}
       <div className="ct-container">
         {/* Unified Stats Bar (sticky) */}
         <div className="stats-bar">
@@ -1484,7 +1604,7 @@ export default function CasinoTrainer() {
 
         <div className="header">
           <div className="brand">
-            <Square size={22} /> Casino Trainer
+            Casino Trainer <span style={{fontSize:"12px",fontWeight:"500",opacity:"0.7"}}>· Blackjack</span>
           </div>
           <div className="stats" style={{ position: "relative" }}>
             <select
@@ -1645,15 +1765,7 @@ export default function CasinoTrainer() {
               <BookOpen size={16} /> Strategy Sheet
             </button>
             <button
-              onClick={() =>
-                alert(`Quick tips:
-• Identify Pair / Soft / Hard first.
-• Always split A,A and 8,8.
-• Hard 11: usually double (not vs Ace).
-• Hard 12: stand vs 4–6, otherwise hit.
-• Soft 18: double vs 3–6, stand vs 2/7/8, hit vs 9/10/A.
-• Press ? to open Strategy Sheet`)
-              }
+              onClick={() => setShowQuickTips(true)}
               className="btn"
             >
               <HelpCircle size={16} /> Quick Tips
