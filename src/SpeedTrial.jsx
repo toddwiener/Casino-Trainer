@@ -41,7 +41,7 @@ const SpeedTrial = ({ generateScenario, bestAction, onClose }) => {
 
   // Keyboard shortcuts
   useEffect(() => {
-    if (view !== "playing") return;
+    if (view !== "playing" || !currentScenario) return;
 
     const handleKeyPress = (e) => {
       const key = e.key.toLowerCase();
@@ -55,7 +55,7 @@ const SpeedTrial = ({ generateScenario, bestAction, onClose }) => {
       } else if (key === "d") {
         e.preventDefault();
         makeDecision("Double");
-      } else if (key === "p" && isPair(currentScenario.player)) {
+      } else if (key === "p" && currentScenario && isPair(currentScenario.player)) {
         e.preventDefault();
         makeDecision("Split");
       }
