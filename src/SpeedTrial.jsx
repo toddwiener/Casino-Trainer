@@ -375,36 +375,28 @@ const SpeedTrial = ({ generateScenario, bestAction, onClose }) => {
 };
 
 // Helper functions
-function renderCard(val) {
-  const rankStr = rankToString(val);
-  const isRed = val === 1 || val === 13 || val === 2 || val === 12;
-  const pip = val === 1 || val === 11 ? "♠" : val === 13 || val === 12 ? "♥" : val === 2 ? "♦" : "♣";
+function renderCard(card) {
+  if (!card) return null;
+  const isRed = card.suit === "♥" || card.suit === "♦";
   return (
     <div className={`card ${isRed ? "red" : ""}`}>
-      <div className="rank">{rankStr}</div>
-      <div className="pip">{pip}</div>
-      <div className="rank-btm">{rankStr}</div>
+      <div className="rank">{card.rank}</div>
+      <div className="pip">{card.suit}</div>
+      <div className="rank-btm">{card.rank}</div>
     </div>
   );
 }
 
-function rankToString(val) {
-  if (val === 1 || val === 11) return "A";
-  if (val === 13 || val === 12) return "K";
-  if (val === 10) return "Q";
-  if (val === 9) return "J";
-  return String(val);
-}
-
 function handToString(hand) {
-  return hand.map(rankToString).join(",");
+  return hand.map((c) => c.rank).join(",");
 }
 
 function isPair(hand) {
-  if (hand.length !== 2) return false;
+  if (!hand || hand.length !== 2) return false;
   const [a, b] = hand;
-  if (a === b) return true;
-  if ((a === 1 || a === 11) && (b === 1 || b === 11)) return true;
+  // Check if both cards have the same rank, or both are Aces
+  if (a.rank === b.rank) return true;
+  if (a.rank === "A" && b.rank === "A") return true;
   return false;
 }
 
