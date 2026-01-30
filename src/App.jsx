@@ -30,51 +30,56 @@ import SpeedTrial from "./SpeedTrial";
 
 // ---------- Inline CSS ----------
 const styles = `
-:root{ --bg1:#0d1117; --bg2:#111827; --panel:#ffffff; --ink:#101418; --muted:#5f6b7a; --brand:#10b981; --brand-ink:#059669; --outline:#e7ecef; --table:#f6faf8; --shadow:0 20px 40px rgba(0,0,0,.15), 0 8px 16px rgba(0,0,0,.08); }
+:root{ --bg1:#F7F9FA; --bg2:#F7F9FA; --panel:#ffffff; --ink:#2F2F2F; --muted:#6B6F76; --brand:#4CC9B0; --brand-ink:#3BA896; --outline:#E3E7EA; --table:#ffffff; --shadow:0 20px 40px rgba(0,0,0,.06), 0 8px 16px rgba(0,0,0,.04); --error:#D64545; --warning:#F4C430; }
 *{box-sizing:border-box}
 html{height:100%;width:100%;-webkit-text-size-adjust:100%}
 body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";overflow-x:hidden}
 #root{min-height:100vh;min-height:-webkit-fill-available;width:100%;display:flex;flex-direction:column}
-.ct-wrap{flex:1;display:flex;flex-direction:column;align-items:center;color:var(--ink);padding:20px;background:linear-gradient(180deg,var(--bg1),var(--bg2))}
-.ct-wrap.light{--bg1:#f6f9fc; --bg2:#eef3f7; --panel:#ffffff; --ink:#0b1218; --muted:#55616f; --table:#ffffff}
-.ct-container{max-width:1600px;width:100%;margin:0 auto;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.3);border-radius:18px;box-shadow:var(--shadow);padding:16px;position:relative;overflow:hidden;min-height:100%}
-.header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
-.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:19px}
-.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid rgba(16,185,129,0.2);color:#065f46;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ct-wrap{flex:1;display:flex;flex-direction:column;align-items:center;color:var(--ink);padding:20px;background:var(--bg1)}
+.ct-wrap.light{--bg1:#F7F9FA; --bg2:#F7F9FA; --panel:#ffffff; --ink:#2F2F2F; --muted:#6B6F76; --table:#ffffff}
+.ct-container{max-width:1600px;width:100%;margin:0 auto;background:#FFFFFF;border:1px solid var(--outline);border-radius:16px;box-shadow:var(--shadow);padding:0;position:relative;overflow:hidden;min-height:100%}
+.product-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--outline)}
+.brand{display:flex;flex-direction:column;gap:2px}
+.brand-title{font-weight:800;font-size:20px;color:var(--ink);line-height:1.2}
+.brand-meta{font-size:13px;font-weight:500;color:var(--muted)}
+.product-controls{display:flex;gap:8px;align-items:center}
+.main-content{padding:20px 24px 24px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:rgba(76,201,176,0.1);border:1px solid rgba(76,201,176,0.3);color:var(--brand-ink);box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .rules{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;margin:6px 0 10px}
 .table{background:linear-gradient(135deg,#f9fafb,#ffffff);border-radius:14px;padding:14px;border:1px solid var(--outline);box-shadow:inset 0 1px 2px rgba(0,0,0,.02)}
 .grid{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:start}
-.section h4{margin:0 0 6px 0;font-size:12px;color:#2b3943}
+.section h4{margin:0 0 6px 0;font-size:12px;color:var(--ink);font-weight:700}
 .cardrow{display:flex;gap:8px;flex-wrap:wrap}
-.card{width:64px;height:92px;border-radius:10px;background:linear-gradient(145deg,#ffffff,#f9fafb);border:1px solid #dde6ea;box-shadow:0 4px 12px rgba(0,0,0,.06), inset 0 -1px 2px rgba(0,0,0,.02);display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:6px;transition:transform 0.2s ease}
+.card{width:64px;height:92px;border-radius:10px;background:#ffffff;border:1px solid var(--outline);box-shadow:0 2px 6px rgba(0,0,0,.04);display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:6px;transition:transform 0.2s ease}
 .card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
 .card.red{color:#b10e2a}
 .card .rank{font-weight:800;font-size:13px}
 .card .pip{font-size:24px}
 .card .rank-btm{font-weight:800;font-size:13px;transform:rotate(180deg)}
 .card.back{background:repeating-linear-gradient(45deg,#c0ced0,#c0ced0 7px,#b3c4c7 7px,#b3c4c7 14px);border-color:#a8babd}
-.actions{display:grid;grid-template-columns:repeat(5,minmax(100px,1fr));gap:8px;margin-top:10px}
-.btn{padding:9px 10px;border-radius:10px;border:1px solid var(--outline);background:linear-gradient(180deg,#ffffff,#f9fafb);font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:all 0.15s cubic-bezier(0.4,0,0.2,1);display:inline-flex;align-items:center;gap:6px}
-.btn:hover{transform:translateY(-1px);box-shadow:0 4px 8px rgba(0,0,0,.1)}
-.btn.primary{background:linear-gradient(135deg,#10b981,#059669);color:white;border-color:transparent;box-shadow:0 2px 8px rgba(16,185,129,0.3)}
-.btn.primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,185,129,0.4)}
-.btn.disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:8px;margin-top:10px;align-items:center}
+.action-primary{flex:1;min-width:120px}
+.action-secondary{flex:0.8;min-width:100px;opacity:0.9}
+.btn{padding:9px 10px;border-radius:10px;border:1px solid var(--outline);background:#ffffff;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:all 0.15s cubic-bezier(0.4,0,0.2,1);display:inline-flex;align-items:center;gap:6px;color:var(--ink)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 3px 6px rgba(0,0,0,.08)}
+.btn.primary{background:var(--brand);color:white;border-color:transparent;box-shadow:0 2px 6px rgba(76,201,176,0.25)}
+.btn.primary:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(76,201,176,0.35)}
+.btn.disabled{background:#EFF2F4;color:#A0A6AD;cursor:not-allowed;opacity:1}
 .kbd-hint{font-size:10px;opacity:0.5;margin-left:5px;font-weight:500}
 .feedback{min-height:28px;display:flex;align-items:center;gap:8px;margin-top:10px}
-.small{font-size:11px;color:#5f6b7a}
-.footer{margin-top:12px;color:#5a6875;font-size:11px}
+.small{font-size:11px;color:var(--muted)}
+.footer{margin-top:12px;color:var(--muted);font-size:11px}
 .select{padding:5px 9px;border-radius:9px;border:1px solid var(--outline);background:#fff;color:var(--ink);font-weight:600;font-size:13px;font-family:inherit}
 .stats{display:flex;gap:8px;align-items:center}
-.stats-bar{position:sticky;top:0;z-index:5;background:linear-gradient(135deg,rgba(255,255,255,0.98),rgba(249,250,251,0.98));backdrop-filter:blur(12px);border-bottom:1px solid var(--outline);border-radius:12px 12px 0 0;margin:-16px -16px 12px -16px;padding:10px 16px;display:flex;justify-content:space-around;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.stat-group{display:flex;flex-direction:column;align-items:center;gap:2px}
-.stat-value{font-size:16px;font-weight:800;color:var(--ink)}
-.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
-.stat-divider{width:1px;height:32px;background:var(--outline)}
+.stats-bar{background:#F7F9FA;border-bottom:1px solid var(--outline);padding:16px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.stat-group{display:flex;flex-direction:column;align-items:center;gap:4px}
+.stat-value{font-size:18px;font-weight:800;color:var(--ink)}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;font-weight:600}
 .hands{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
 .hand{padding:8px;border:1px solid var(--outline);border-radius:12px;background:#fff}
 .hand.active{outline:2px solid var(--brand);outline-offset:1px}
-.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;border:1px solid var(--outline);background:#f7fbfa;color:#2b3943;display:inline-flex;gap:5px;align-items:center}
-.sep{height:1px;background:#eef2f4;margin:10px 0}
+.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;border:1px solid var(--outline);background:rgba(76,201,176,0.08);color:var(--ink);display:inline-flex;gap:5px;align-items:center}
+.sep{height:1px;background:var(--outline);margin:10px 0}
 
 /* Settings popover */
 .settings-pop{position:absolute;top:52px;right:14px;background:#fff;border:1px solid var(--outline);border-radius:10px;box-shadow:var(--shadow);padding:10px 10px;min-width:260px;z-index:10}
@@ -84,7 +89,7 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
 /* Strategy Sheet Modal */
 .strategy-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
 .strategy-modal{background:#fff;border-radius:16px;box-shadow:var(--shadow);max-width:1100px;width:100%;max-height:90vh;overflow-y:auto;position:relative}
-.strategy-header{position:sticky;top:0;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:16px 20px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center;z-index:1}
+.strategy-header{position:sticky;top:0;background:var(--brand);color:white;padding:16px 20px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center;z-index:10}
 .strategy-header h2{margin:0;font-size:20px;font-weight:800}
 .strategy-close{background:rgba(255,255,255,0.2);border:none;color:white;font-size:24px;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
 .strategy-close:hover{background:rgba(255,255,255,0.3)}
@@ -94,35 +99,35 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
 .strategy-section h3{margin:0 0 12px 0;font-size:16px;font-weight:700;color:var(--ink)}
 .strategy-table{width:100%;border-collapse:collapse;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
 .strategy-table th,.strategy-table td{padding:8px 6px;text-align:center;border:1px solid var(--outline);font-weight:600}
-.strategy-table thead th{background:linear-gradient(135deg,#f9fafb,#f3f4f6);color:var(--ink);font-weight:800;position:sticky;top:0;z-index:1}
-.strategy-table tbody th{background:linear-gradient(135deg,#f9fafb,#f3f4f6);color:var(--ink);font-weight:800}
-.strategy-table td.hit{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#78350f}
-.strategy-table td.stand{background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#065f46}
-.strategy-table td.double{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1e40af}
-.strategy-table td.split{background:linear-gradient(135deg,#fce7f3,#fbcfe8);color:#831843}
+.strategy-table thead th{background:#ffffff;color:var(--ink);font-weight:800;position:sticky;top:68px;z-index:5;border-bottom:2px solid var(--outline)}
+.strategy-table tbody th{background:#F7F9FA;color:var(--ink);font-weight:800}
+.strategy-table td.hit{background:rgba(254,243,199,0.4);color:#92400E;font-weight:600}
+.strategy-table td.stand{background:rgba(76,201,176,0.18);color:var(--brand-ink);font-weight:600}
+.strategy-table td.double{background:rgba(147,197,253,0.25);color:#1E40AF;font-weight:600}
+.strategy-table td.split{background:rgba(251,207,232,0.35);color:#BE185D;font-weight:700}
 .strategy-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;padding:12px;background:#f9fafb;border-radius:8px}
 .strategy-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
 .strategy-legend-box{width:20px;height:20px;border-radius:4px;border:1px solid rgba(0,0,0,0.1)}
 
 /* Speed Trial styles */
-.speed-trial-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
-.speed-trial-modal{background:#fff;border-radius:16px;box-shadow:var(--shadow);max-width:900px;width:100%;max-height:90vh;overflow-y:auto}
-.speed-trial-header{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#78350f;padding:16px 20px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1}
+.speed-trial-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.speed-trial-modal{background:#fff;border-radius:16px;box-shadow:var(--shadow);max-width:900px;width:100%;max-height:90vh;overflow-y:auto;border-top:3px solid var(--warning)}
+.speed-trial-header{background:#ffffff;color:var(--ink);padding:16px 20px;border-bottom:1px solid var(--outline);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1}
 .speed-trial-header h2{margin:0;font-size:20px;font-weight:800}
 .speed-trial-content{position:relative}
 .speed-trial-modes{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px}
-.speed-trial-mode{border:2px solid var(--outline);border-radius:12px;padding:16px;background:#fff;transition:all 0.2s}
-.speed-trial-mode:hover{border-color:var(--brand);box-shadow:0 4px 12px rgba(16,185,129,0.15)}
-.mode-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--brand)}
+.speed-trial-mode{border:1px solid var(--outline);border-radius:12px;padding:16px;background:#fff;transition:all 0.2s}
+.speed-trial-mode:hover{border-color:var(--brand);box-shadow:0 3px 8px rgba(76,201,176,0.15)}
+.mode-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--warning)}
 .mode-header h3{margin:0;font-size:16px;font-weight:800}
 .mode-desc{margin:4px 0;font-size:13px;color:var(--ink)}
 .mode-target{margin:4px 0 12px;font-size:11px;color:var(--muted)}
 .speed-trial-scoring{background:#f9fafb;border-radius:8px;padding:12px 16px;border:1px solid var(--outline)}
 .speed-trial-scoring h4{margin:0 0 8px 0;font-size:13px;font-weight:800}
 .speed-trial-scoring ul{margin:0;padding-left:20px;font-size:12px;line-height:1.7}
-.speed-trial-progress{background:rgba(255,255,255,0.25);padding:4px 12px;border-radius:999px;font-weight:700;font-size:13px}
-.speed-trial-timer{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.25);padding:6px 12px;border-radius:999px;font-weight:700;font-size:14px}
-.speed-trial-score{background:rgba(255,255,255,0.25);padding:6px 12px;border-radius:999px;font-weight:700;font-size:14px}
+.speed-trial-progress{background:rgba(244,196,48,0.15);padding:4px 12px;border-radius:999px;font-weight:700;font-size:13px;color:var(--ink)}
+.speed-trial-timer{display:flex;align-items:center;gap:6px;background:rgba(244,196,48,0.15);padding:6px 12px;border-radius:999px;font-weight:700;font-size:14px;color:var(--ink)}
+.speed-trial-score{background:rgba(76,201,176,0.15);padding:6px 12px;border-radius:999px;font-weight:700;font-size:14px;color:var(--ink)}
 .speed-trial-results{background:#f9fafb;border-radius:12px;padding:20px;border:1px solid var(--outline)}
 .results-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
 .result-stat{text-align:center;padding:16px;background:#fff;border-radius:10px;border:1px solid var(--outline)}
@@ -132,28 +137,28 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
 .results-list{max-height:400px;overflow-y:auto;background:#fff;border-radius:8px;padding:8px;border:1px solid var(--outline)}
 .result-item{display:grid;grid-template-columns:24px 1fr auto 60px 60px;gap:8px;align-items:center;padding:8px;border-radius:6px;margin-bottom:4px;font-size:12px;transition:background 0.2s}
 .result-item:hover{background:#f9fafb}
-.result-item.correct{border-left:3px solid #10b981}
-.result-item.incorrect{border-left:3px solid #ef4444}
+.result-item.correct{border-left:3px solid var(--brand)}
+.result-item.incorrect{border-left:3px solid var(--error)}
 .result-icon{display:flex;align-items:center}
-.result-item.correct .result-icon{color:#10b981}
-.result-item.incorrect .result-icon{color:#ef4444}
+.result-item.correct .result-icon{color:var(--brand)}
+.result-item.incorrect .result-icon{color:var(--error)}
 .result-hand{font-weight:600}
 .result-decision{color:var(--muted);font-size:11px}
 .result-time{text-align:right;font-weight:600}
 .result-points{text-align:right;font-weight:800;padding:4px 8px;border-radius:4px}
-.result-points.positive{color:#059669;background:rgba(16,185,129,0.1)}
-.result-points.negative{color:#dc2626;background:rgba(239,68,68,0.1)}
+.result-points.positive{color:var(--brand-ink);background:rgba(76,201,176,0.12)}
+.result-points.negative{color:var(--error);background:rgba(214,69,69,0.1)}
 
 /* Inline feedback (replaces modal) */
-.inline-feedback{margin-top:10px;background:linear-gradient(135deg,#fef2f2,#fff);border-left:4px solid #ef4444;border-radius:10px;padding:10px 12px;box-shadow:0 3px 12px rgba(239,68,68,.12);overflow:hidden}
-.inline-feedback-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:800;font-size:13px}
-.close-btn{background:none;border:none;font-size:22px;cursor:pointer;opacity:0.6;line-height:1;padding:0;width:22px;height:22px}
+.inline-feedback{margin-top:12px;background:#ffffff;border-left:3px solid var(--error);border-radius:8px;padding:12px 14px;box-shadow:0 2px 6px rgba(0,0,0,.06);border:1px solid var(--outline);overflow:hidden}
+.inline-feedback-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:700;font-size:13px;color:var(--ink)}
+.close-btn{background:none;border:none;font-size:20px;cursor:pointer;opacity:0.5;line-height:1;padding:0;width:20px;height:20px;color:var(--muted)}
 .close-btn:hover{opacity:1}
-.explanation-text{margin:6px 0;font-size:12px;line-height:1.5}
-.tip-highlight{background:#fef3c7;border-left:3px solid #f59e0b;padding:6px 8px;margin:6px 0;border-radius:5px;font-weight:600;font-size:12px}
-.ev-stats{background:#f8fafc;border-radius:7px;padding:6px 8px;margin-top:6px;font-size:11px}
-.ev-row{display:flex;justify-content:space-between;gap:6px;margin:3px 0}
-.delta{font-weight:800;color:#dc2626}
+.explanation-text{margin:6px 0;font-size:12px;line-height:1.6;color:var(--ink)}
+.tip-highlight{background:rgba(244,196,48,0.1);border-left:2px solid var(--warning);padding:8px 10px;margin:8px 0;border-radius:6px;font-weight:600;font-size:12px;color:var(--ink)}
+.ev-stats{background:#F7F9FA;border-radius:6px;padding:8px 10px;margin-top:8px;font-size:11px}
+.ev-row{display:flex;justify-content:space-between;gap:8px;margin:4px 0}
+.delta{font-weight:700;color:var(--error)}
 
 /* Mobile responsive breakpoints */
 @media (max-width: 768px) {
@@ -201,7 +206,9 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
   .card .pip{font-size:18px}
   .card .rank-btm{font-size:11px}
   .cardrow{gap:6px}
-  .actions{grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px}
+  .actions{flex-wrap:wrap;gap:6px;margin-top:8px}
+  .action-primary{min-width:100px}
+  .action-secondary{min-width:90px}
   .btn{padding:8px 6px;font-size:11px;min-height:40px}
   .kbd-hint{font-size:9px}
   .feedback{min-height:24px;margin-top:8px;gap:6px}
@@ -245,7 +252,9 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
   .card .pip{font-size:16px}
   .card .rank-btm{font-size:10px}
   .cardrow{gap:5px}
-  .actions{grid-template-columns:repeat(2,1fr);gap:5px;margin-top:6px}
+  .actions{flex-wrap:wrap;gap:5px;margin-top:6px}
+  .action-primary{min-width:90px}
+  .action-secondary{min-width:80px}
   .btn{min-height:38px;padding:8px 6px;font-size:11px}
   .feedback{margin-top:6px}
   .hand{padding:5px}
@@ -939,7 +948,7 @@ export default function CasinoTrainer() {
     setLocked(true);
     const suffix = reason ? ` — ${reason}` : "";
     setMessage(
-      `${lastMoveCorrect ? "✅ Correct" : "❌ Not quite"} · Hand finished — ${
+      `${lastMoveCorrect ? "✅ Correct" : "❌ Incorrect"} · Hand finished — ${
         finalScore.c
       }/${finalScore.t} correct${suffix}`
     );
@@ -1093,13 +1102,13 @@ export default function CasinoTrainer() {
       setHands(updatedHands);
       const { hard } = handTotals([...currentHand, nc]);
       if (hard > 21) {
-        setMessage(moveCorrect ? "✅ Correct — Bust" : "❌ Not quite — Bust");
+        setMessage(moveCorrect ? "✅ Correct — Bust" : "❌ Incorrect — Bust");
         finishAndAdvance(moveCorrect, updatedScore, "Busted");
       } else {
         setMessage(
           moveCorrect
             ? "✅ Correct — Keep playing"
-            : "❌ Not quite — Keep playing"
+            : "❌ Incorrect — Keep playing"
         );
       }
       return;
@@ -1115,7 +1124,7 @@ export default function CasinoTrainer() {
       const updatedHands = hands.map((h, i) => (i === active ? [...h, nc] : h));
       setHands(updatedHands);
       setMessage(
-        moveCorrect ? "✅ Correct — Doubled" : "❌ Not quite — Doubled"
+        moveCorrect ? "✅ Correct — Doubled" : "❌ Incorrect — Doubled"
       );
       finishAndAdvance(moveCorrect, updatedScore, "Doubled");
       return;
@@ -1135,14 +1144,14 @@ export default function CasinoTrainer() {
       setMessage(
         moveCorrect
           ? "✅ Correct — Split into two hands"
-          : "❌ Not quite — Split into two hands"
+          : "❌ Incorrect — Split into two hands"
       );
       setExplanation((e) => e + " • Play Hand A, then Hand B.");
       return;
     }
 
     if (action === "Stand") {
-      setMessage(moveCorrect ? "✅ Correct — Stand" : "❌ Not quite — Stand");
+      setMessage(moveCorrect ? "✅ Correct — Stand" : "❌ Incorrect — Stand");
       finishAndAdvance(moveCorrect, updatedScore, "Stood");
       return;
     }
@@ -1269,6 +1278,26 @@ export default function CasinoTrainer() {
     return bestEV !== undefined ? bestEV.toFixed(3) : "—";
   };
 
+  // Get EV-based background color intensity
+  const getEVColor = (category, total, dealerUp, action) => {
+    const evStr = getEV(category, total, dealerUp);
+    if (evStr === "—") return {};
+    const ev = parseFloat(evStr);
+
+    // Positive EV: teal with intensity
+    if (ev > 0.05) {
+      const intensity = Math.min(ev * 2, 0.3); // Cap at 0.3 opacity
+      return { backgroundColor: `rgba(76, 201, 176, ${intensity})`, color: 'var(--brand-ink)' };
+    }
+    // Negative EV: red with intensity based on how bad it is
+    else if (ev < -0.3) {
+      const intensity = Math.min(Math.abs(ev) * 0.3, 0.2); // Cap at 0.2 opacity
+      return { backgroundColor: `rgba(214, 69, 69, ${intensity})`, color: 'var(--error)' };
+    }
+    // Near neutral: keep existing action-based coloring
+    return {};
+  };
+
   // Generate strategy tables
   const generateStrategyTables = () => {
     // Hard totals table (4-20 vs 2-11)
@@ -1341,7 +1370,11 @@ export default function CasinoTrainer() {
                         <tr key={row.total}>
                           <th>{row.total}</th>
                           {[2,3,4,5,6,7,8,9,10,11].map(up => (
-                            <td key={up} className={strategyView === "action" ? row[up].toLowerCase() : ""}>
+                            <td
+                              key={up}
+                              className={strategyView === "action" ? row[up].toLowerCase() : ""}
+                              style={strategyView === "ev" ? getEVColor("HARD", row.total, up, row[up]) : {}}
+                            >
                               {strategyView === "action" ? row[up][0] : getEV("HARD", row.total, up)}
                             </td>
                           ))}
@@ -1366,7 +1399,11 @@ export default function CasinoTrainer() {
                         <tr key={row.total}>
                           <th>A,{row.total - 11}</th>
                           {[2,3,4,5,6,7,8,9,10,11].map(up => (
-                            <td key={up} className={strategyView === "action" ? row[up].toLowerCase() : ""}>
+                            <td
+                              key={up}
+                              className={strategyView === "action" ? row[up].toLowerCase() : ""}
+                              style={strategyView === "ev" ? getEVColor("SOFT", row.total, up, row[up]) : {}}
+                            >
                               {strategyView === "action" ? row[up][0] : getEV("SOFT", row.total, up)}
                             </td>
                           ))}
@@ -1391,7 +1428,11 @@ export default function CasinoTrainer() {
                         <tr key={row.rank}>
                           <th>{row.rank},{row.rank}</th>
                           {[2,3,4,5,6,7,8,9,10,11].map(up => (
-                            <td key={up} className={strategyView === "action" ? row[up].toLowerCase() : ""}>
+                            <td
+                              key={up}
+                              className={strategyView === "action" ? row[up].toLowerCase() : ""}
+                              style={strategyView === "ev" ? getEVColor("PAIR", row.rank, up, row[up]) : {}}
+                            >
                               {strategyView === "action"
                                 ? (row[up] === "Split" ? "P" : row[up][0])
                                 : getEV("PAIR", row.rank, up)}
@@ -1406,19 +1447,19 @@ export default function CasinoTrainer() {
                 {/* Legend */}
                 <div className="strategy-legend">
                   <div className="strategy-legend-item">
-                    <div className="strategy-legend-box" style={{background:"linear-gradient(135deg,#fef3c7,#fde68a)"}}></div>
+                    <div className="strategy-legend-box" style={{background:"rgba(254,243,199,0.4)", border:"1px solid rgba(146,64,14,0.2)"}}></div>
                     <span>H = Hit</span>
                   </div>
                   <div className="strategy-legend-item">
-                    <div className="strategy-legend-box" style={{background:"linear-gradient(135deg,#d1fae5,#a7f3d0)"}}></div>
+                    <div className="strategy-legend-box" style={{background:"rgba(76,201,176,0.18)", border:"1px solid rgba(76,201,176,0.4)"}}></div>
                     <span>S = Stand</span>
                   </div>
                   <div className="strategy-legend-item">
-                    <div className="strategy-legend-box" style={{background:"linear-gradient(135deg,#dbeafe,#bfdbfe)"}}></div>
+                    <div className="strategy-legend-box" style={{background:"rgba(147,197,253,0.25)", border:"1px solid rgba(30,64,175,0.3)"}}></div>
                     <span>D = Double</span>
                   </div>
                   <div className="strategy-legend-item">
-                    <div className="strategy-legend-box" style={{background:"linear-gradient(135deg,#fce7f3,#fbcfe8)"}}></div>
+                    <div className="strategy-legend-box" style={{background:"rgba(251,207,232,0.35)", border:"1px solid rgba(190,24,93,0.3)"}}></div>
                     <span>P = Split</span>
                   </div>
                 </div>
@@ -1644,33 +1685,13 @@ export default function CasinoTrainer() {
         />
       )}
       <div className="ct-container">
-        {/* Unified Stats Bar (sticky) */}
-        <div className="stats-bar">
-          <div className="stat-group">
-            <Pill flash={flashStreak}>
-              <Flame size={14} /> {streak}
-            </Pill>
-            <span className="stat-label">Streak</span>
-          </div>
-          <div className="stat-divider" />
-          <div className="stat-group">
-            <span className="stat-value">{bestStreak}</span>
-            <span className="stat-label">Best</span>
-          </div>
-          <div className="stat-divider" />
-          <div className="stat-group">
-            <span className="stat-value">
-              {totalAttempts ? Math.round((totalCorrect / totalAttempts) * 100) : 0}%
-            </span>
-            <span className="stat-label">Accuracy</span>
-          </div>
-        </div>
-
-        <div className="header">
+        {/* Tier 1: Product Header */}
+        <div className="product-header">
           <div className="brand">
-            Casino Trainer <span style={{fontSize:"12px",fontWeight:"500",opacity:"0.7"}}>· Blackjack</span>
+            <div className="brand-title">Casino Trainer</div>
+            <div className="brand-meta">Blackjack · S17 · DAS · Strategy-only grading</div>
           </div>
-          <div className="stats" style={{ position: "relative" }}>
+          <div className="product-controls">
             <select
               className="select"
               value={mode}
@@ -1691,10 +1712,28 @@ export default function CasinoTrainer() {
           </div>
         </div>
 
-        <div className="rules">
-          <Info size={16} /> Blackjack · S17 · DAS · Strategy-only grading
+        {/* Tier 2: Session Stats Bar */}
+        <div className="stats-bar">
+          <div className="stat-group">
+            <Pill flash={flashStreak}>
+              <Flame size={14} /> {streak}
+            </Pill>
+            <span className="stat-label">Streak</span>
+          </div>
+          <div className="stat-group">
+            <span className="stat-value">{bestStreak}</span>
+            <span className="stat-label">Best</span>
+          </div>
+          <div className="stat-group">
+            <span className="stat-value">
+              {totalAttempts ? Math.round((totalCorrect / totalAttempts) * 100) : 0}%
+            </span>
+            <span className="stat-label">Accuracy</span>
+          </div>
         </div>
 
+        {/* Main Content */}
+        <div className="main-content">
         <div className="table">
           <div className="grid">
             <div className="section">
@@ -1742,17 +1781,19 @@ export default function CasinoTrainer() {
 
           <div className="actions">
             {ACTIONS.map((act) => {
-              const disabled =
-                locked ||
-                awaitingAdvance ||
-                (act === "Split" && !isPair(hands[active] || [])) ||
-                act === "Surrender";
+              // Hide invalid actions instead of showing disabled
+              if (act === "Surrender") return null;
+              if (act === "Split" && !isPair(hands[active] || [])) return null;
+
+              const disabled = locked || awaitingAdvance;
+              const isPrimary = act === "Hit" || act === "Stand";
               const shortcut = act === "Hit" ? "H" : act === "Stand" ? "S" : act === "Double" ? "D" : act === "Split" ? "P" : "";
+
               return (
                 <button
                   key={act}
                   onClick={() => onChoose(act)}
-                  className={`btn ${disabled ? "disabled" : ""}`}
+                  className={`btn ${isPrimary ? "action-primary" : "action-secondary"} ${disabled ? "disabled" : ""}`}
                   disabled={disabled}
                 >
                   {act}
@@ -1771,24 +1812,23 @@ export default function CasinoTrainer() {
           {showMoreInfo && (
             <div className="inline-feedback">
               <div className="inline-feedback-header">
-                <strong>Why your move was wrong</strong>
+                <strong>Suboptimal Decision</strong>
                 <button className="close-btn" onClick={() => setMoreInfo(null)}>×</button>
               </div>
               <div className="small" style={{ marginBottom: 8 }}>
                 Best: <b>{lastDecision.best}</b> · You chose: <b>{lastDecision.chosen}</b>
-                {lastDecision.first ? " (Opening)" : " (Later)"}
               </div>
-              <div className="explanation-text">
-                {infoHint
-                  ? infoHint.blurb
-                  : "This spot is decided by basic strategy for S17/DAS."}
-              </div>
+              {infoHint && infoHint.blurb && (
+                <div className="explanation-text">{infoHint.blurb}</div>
+              )}
               {extraTip && <div className="tip-highlight">{extraTip}</div>}
               {evStats ? (
                 <div className="ev-stats">
                   <div className="ev-row">
                     <span>EV:</span>
-                    <span>Best {evStats.best.ev.toFixed(3)} vs Yours {evStats.chosen.ev.toFixed(3)}</span>
+                    <span>
+                      Best <strong style={{color: evStats.best.ev > 0.05 ? 'var(--brand)' : evStats.best.ev < -0.05 ? 'var(--error)' : 'var(--muted)'}}>{evStats.best.ev.toFixed(3)}</strong> vs Yours <strong style={{color: evStats.chosen.ev > 0.05 ? 'var(--brand)' : evStats.chosen.ev < -0.05 ? 'var(--error)' : 'var(--muted)'}}>{evStats.chosen.ev.toFixed(3)}</strong>
+                    </span>
                     <span className="delta">ΔEV {evStats.delta.toFixed(3)}</span>
                   </div>
                   <div className="ev-row small">
@@ -1801,36 +1841,49 @@ export default function CasinoTrainer() {
               ) : (
                 <div className="small">Calculating EV…</div>
               )}
+              {awaitingAdvance && (
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--outline)" }}>
+                  <button
+                    onClick={continueAdvance}
+                    className="btn primary"
+                    style={{ width: "100%", justifyContent: "center" }}
+                  >
+                    Continue <span className="kbd-hint">Space</span>
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
           <div
             style={{
-              marginTop: 12,
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
+              marginTop: 16,
+              display: "flex",
+              flexDirection: "column",
               gap: 8,
             }}
           >
-            <button
-              onClick={() => (awaitingAdvance ? continueAdvance() : spawn())}
-              className="btn primary"
-              disabled={locked && !awaitingAdvance}
-              style={{gridColumn: "1 / -1"}}
-            >
-              <Repeat size={16} />{" "}
-              {awaitingAdvance ? "Continue" : "Next Scenario"}
-              <span className="kbd-hint">{awaitingAdvance ? "Space" : "N"}</span>
-            </button>
+            <div style={{display: "flex", justifyContent: "flex-end"}}>
+              <button
+                onClick={() => (awaitingAdvance ? continueAdvance() : spawn())}
+                className="btn"
+                disabled={locked && !awaitingAdvance}
+                style={{minWidth: "180px"}}
+              >
+                <Repeat size={16} />{" "}
+                {awaitingAdvance ? "Continue" : "Next Scenario"}
+                <span className="kbd-hint">{awaitingAdvance ? "Space" : "N"}</span>
+              </button>
+            </div>
             <button
               onClick={() => setShowSpeedTrial(true)}
               className="btn"
               style={{
-                gridColumn: "1 / -1",
-                background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-                color: "#78350f",
-                borderColor: "transparent",
-                fontWeight: "800"
+                background: "#ffffff",
+                color: "var(--ink)",
+                borderLeft: "3px solid var(--warning)",
+                fontWeight: "700",
+                width: "100%"
               }}
             >
               <Zap size={16} /> Speed Trial
@@ -1867,6 +1920,7 @@ export default function CasinoTrainer() {
           Casino Trainer · Blackjack (S17/DAS). Strategy-only grading; EV from
           Monte Carlo estimates (infinite shoe) for teaching. House rules may
           change results slightly.
+        </div>
         </div>
       </div>
     </div>
