@@ -40,12 +40,14 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
 .ct-wrap{flex:1;display:flex;flex-direction:column;align-items:center;color:var(--ink);padding:20px;background:var(--bg1)}
 .ct-wrap.light{--bg1:#F7F9FA; --bg2:#F7F9FA; --panel:#ffffff; --ink:#2F2F2F; --muted:#6B6F76; --table:#ffffff}
 .ct-container{max-width:1600px;width:100%;margin:0 auto;background:#FFFFFF;border:1px solid var(--outline);border-radius:16px;box-shadow:var(--shadow);padding:0;position:relative;overflow:hidden;min-height:100%}
-.product-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--outline)}
-.brand{display:flex;flex-direction:column;gap:2px}
+.product-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--outline);flex-wrap:wrap;gap:12px}
+.brand{display:flex;flex-direction:column;gap:2px;flex:1;min-width:200px}
 .brand-title{font-weight:800;font-size:20px;color:var(--ink);line-height:1.2}
 .brand-meta{font-size:13px;font-weight:500;color:var(--muted)}
-.product-controls{display:flex;gap:8px;align-items:center}
+.product-controls{display:flex;gap:8px;align-items:center;flex-shrink:0}
 .main-content{padding:20px 24px 24px}
+.mobile-action-dock{display:none}
+.desktop-controls{display:block}
 .pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:rgba(76,201,176,0.1);border:1px solid rgba(76,201,176,0.3);color:var(--brand-ink);box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .rules{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;margin:6px 0 10px}
 .table{background:linear-gradient(135deg,#f9fafb,#ffffff);border-radius:14px;padding:14px;border:1px solid var(--outline);box-shadow:inset 0 1px 2px rgba(0,0,0,.02)}
@@ -231,11 +233,66 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
 }
 
 @media (max-width: 640px) {
+  /* Base mobile setup */
   html{height:100%;height:100dvh;height:-webkit-fill-available;width:100%;overflow-x:hidden}
   body{height:100%;height:100dvh;height:-webkit-fill-available;overflow:hidden;width:100%}
   #root{height:100%;height:100dvh;height:-webkit-fill-available;overflow:hidden;width:100%}
-  .ct-wrap{padding:0!important;height:100%;height:100dvh;height:-webkit-fill-available;overflow-y:auto;overflow-x:hidden;width:100%;box-sizing:border-box}
-  .ct-container{padding:8px!important;width:100%!important;max-width:none!important;margin:0!important;border-radius:0!important;overflow-x:hidden;min-height:100%;box-sizing:border-box}
+  .ct-wrap{padding:0!important;height:100%;height:100dvh;height:-webkit-fill-available;overflow-y:auto;overflow-x:hidden;width:100%;box-sizing:border-box;padding-bottom:180px!important}
+  .ct-container{padding:0!important;width:100%!important;max-width:none!important;margin:0!important;border-radius:0!important;overflow-x:hidden;min-height:100%;box-sizing:border-box;padding-bottom:180px!important}
+
+  /* Compressed header */
+  .product-header{padding:8px 12px;gap:8px;border-bottom:1px solid var(--outline)}
+  .brand{flex:1 1 100%;min-width:100%}
+  .brand-title{font-size:16px;line-height:1.2}
+  .brand-meta{font-size:11px;line-height:1.3;margin-top:2px}
+  .product-controls{flex:1 1 100%;justify-content:flex-end;width:100%;gap:6px}
+  .select{padding:5px 8px;font-size:12px;min-width:85px;font-weight:600}
+  .btn{padding:6px 8px;font-size:11px;min-height:32px}
+
+  /* Compact stats row */
+  .stats-bar{margin:0;padding:8px 12px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-bottom:1px solid var(--outline)}
+  .stat-group{padding:6px 0}
+  .stat-value{font-size:18px;font-weight:800}
+  .stat-label{font-size:9px;letter-spacing:0.5px;font-weight:600}
+
+  /* Main content with bottom padding for sticky dock */
+  .main-content{padding:12px;padding-bottom:20px}
+
+  /* Vertical stack gameplay */
+  .table{padding:0;background:transparent;border:none;box-shadow:none}
+  .grid{display:flex;flex-direction:column;gap:16px;align-items:center}
+  .section{width:100%;display:flex;flex-direction:column;align-items:center}
+  .section h4{font-size:11px;text-align:center;margin-bottom:8px;font-weight:700;color:var(--muted)}
+
+  /* Scaled up cards */
+  .card{width:56px;height:80px;padding:4px;border-radius:8px}
+  .card .rank{font-size:12px}
+  .card .pip{font-size:22px}
+  .card .rank-btm{font-size:12px}
+  .cardrow{gap:8px;justify-content:center}
+
+  /* Hands layout */
+  .hands{justify-content:center;gap:8px}
+  .hand{padding:8px;border-radius:10px}
+  .badge{font-size:9px;padding:2px 6px}
+
+  /* Hide desktop action buttons (will use sticky dock) */
+  .actions{display:none!important}
+
+  /* Show mobile dock */
+  .mobile-action-dock{display:block!important;position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(10px);border-top:2px solid var(--outline);padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom));box-shadow:0 -4px 12px rgba(0,0,0,0.1);z-index:20}
+  .mobile-actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0}
+  .mobile-action-btn{min-height:52px;font-size:14px;font-weight:700;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .mobile-secondary-row{display:flex;gap:8px;margin-top:8px}
+  .mobile-secondary-btn{flex:1;min-height:44px;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:4px}
+
+  /* Learning tools menu positioning for mobile */
+  .learning-tools-menu{bottom:auto;left:auto;right:12px;top:auto;transform:translateY(-100%);margin-bottom:8px}
+
+  /* Feedback area */
+  .feedback{margin-top:12px;padding:0 12px}
+
+  /* Strategy modals */
   .strategy-overlay{padding:6px}
   .strategy-header{padding:10px 12px}
   .strategy-header h2{font-size:14px}
@@ -244,27 +301,9 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
   .strategy-section h3{font-size:13px}
   .strategy-table{font-size:9px}
   .strategy-table th,.strategy-table td{padding:5px 3px}
-  .stats-bar{margin:-8px -8px 6px -8px;padding:5px 8px}
-  .header{flex-wrap:wrap;gap:8px;justify-content:space-between;margin-bottom:8px}
-  .brand{font-size:14px;flex:1 1 100%;text-align:left;order:1}
-  .stats{justify-content:flex-end;order:2;gap:10px}
-  .select{padding:6px 10px;font-size:13px;min-width:100px;font-weight:600}
-  .btn{padding:8px 10px;font-size:12px}
-  .rules{flex-wrap:wrap;font-size:10px;justify-content:center;margin:3px 0 6px}
-  .grid{display:flex;flex-direction:column;gap:8px}
-  .table{padding:8px}
-  .card{width:46px;height:66px;padding:3px}
-  .card .rank{font-size:10px}
-  .card .pip{font-size:16px}
-  .card .rank-btm{font-size:10px}
-  .cardrow{gap:5px}
-  .actions{flex-wrap:wrap;gap:5px;margin-top:6px}
-  .action-primary{min-width:90px}
-  .action-secondary{min-width:80px}
-  .btn{min-height:38px;padding:8px 6px;font-size:11px}
-  .feedback{margin-top:6px}
-  .hand{padding:5px}
-  .badge{font-size:9px;padding:2px 6px}
+
+  /* Hide desktop-only controls */
+  .desktop-controls{display:none!important}
 }
 
 @media (max-width: 480px) {
@@ -1855,7 +1894,8 @@ export default function CasinoTrainer() {
 
           <div className="sep" />
 
-          <div className="actions">
+          {/* Desktop Actions */}
+          <div className="actions desktop-controls">
             {ACTIONS.map((act) => {
               // Hide invalid actions instead of showing disabled
               if (act === "Surrender") return null;
@@ -1931,7 +1971,9 @@ export default function CasinoTrainer() {
             </div>
           )}
 
+          {/* Desktop Bottom Controls */}
           <div
+            className="desktop-controls"
             style={{
               marginTop: 16,
               display: "flex",
@@ -1982,11 +2024,75 @@ export default function CasinoTrainer() {
           </div>
         </div>
 
-        <div className="footer">
+        <div className="footer desktop-controls">
           Casino Trainer · Blackjack (S17/DAS). Strategy-only grading; EV from
           Monte Carlo estimates (infinite shoe) for teaching. House rules may
           change results slightly.
         </div>
+
+        {/* Mobile Action Dock */}
+        <div className="mobile-action-dock">
+          {/* Primary Actions: 2x2 Grid */}
+          <div className="mobile-actions-grid">
+            <button
+              onClick={() => onChoose('Hit')}
+              className="btn primary mobile-action-btn"
+              disabled={locked || awaitingAdvance}
+            >
+              Hit <span className="kbd-hint">H</span>
+            </button>
+            <button
+              onClick={() => onChoose('Stand')}
+              className="btn primary mobile-action-btn"
+              disabled={locked || awaitingAdvance}
+            >
+              Stand <span className="kbd-hint">S</span>
+            </button>
+            <button
+              onClick={() => onChoose('Double')}
+              className="btn mobile-action-btn"
+              disabled={locked || awaitingAdvance}
+            >
+              Double <span className="kbd-hint">D</span>
+            </button>
+            {isPair(hands[active] || []) && (
+              <button
+                onClick={() => onChoose('Split')}
+                className="btn mobile-action-btn"
+                disabled={locked || awaitingAdvance}
+              >
+                Split <span className="kbd-hint">P</span>
+              </button>
+            )}
+          </div>
+
+          {/* Secondary Row: Next Scenario + Tools */}
+          <div className="mobile-secondary-row">
+            <button
+              onClick={() => (awaitingAdvance ? continueAdvance() : spawn())}
+              className="btn mobile-secondary-btn"
+              disabled={locked && !awaitingAdvance}
+            >
+              <Repeat size={14} /> {awaitingAdvance ? "Continue" : "Next"}
+            </button>
+            <button
+              onClick={() => setShowSpeedTrial(true)}
+              className="btn mobile-secondary-btn"
+              style={{borderLeft: "3px solid var(--warning)"}}
+            >
+              <Zap size={14} /> Speed Trial
+            </button>
+            <button
+              onClick={() => setShowLearningTools((v) => !v)}
+              className="btn mobile-secondary-btn"
+              style={{position: "relative"}}
+            >
+              <GraduationCap size={14} /> Tools
+              {showLearningTools && learningToolsMenu}
+            </button>
+          </div>
+        </div>
+
         </div>
       </div>
     </div>
