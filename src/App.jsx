@@ -249,11 +249,13 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
   .select{padding:5px 8px;font-size:12px;min-width:85px;font-weight:600}
   .btn{padding:6px 8px;font-size:11px;min-height:32px}
 
-  /* Compact stats row */
+  /* Compact stats row with centered alignment */
   .stats-bar{margin:0;padding:8px 12px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-bottom:1px solid var(--outline)}
-  .stat-group{padding:6px 0}
+  .stat-group{padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:4px}
   .stat-value{font-size:18px;font-weight:800}
   .stat-label{font-size:9px;letter-spacing:0.5px;font-weight:600}
+  .pill{padding:4px 7px;gap:4px;font-size:15px;font-weight:800}
+  .pill svg{width:12px;height:12px}
 
   /* Main content with bottom padding for sticky dock */
   .main-content{padding:12px;padding-bottom:20px}
@@ -264,12 +266,12 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
   .section{width:100%;display:flex;flex-direction:column;align-items:center}
   .section h4{font-size:11px;text-align:center;margin-bottom:8px;font-weight:700;color:var(--muted)}
 
-  /* Cards with proper aspect ratio (NO transform scaling) */
-  /* Calculate height directly (16:23 ratio) to support all browsers */
-  .card{width:clamp(68px, 18vw, 84px);height:clamp(97.75px, 25.875vw, 120.75px);flex-shrink:0;padding:6px;border-radius:10px}
-  .card .rank{font-size:clamp(11px, 2.8vw, 14px);font-weight:800}
-  .card .pip{font-size:clamp(20px, 5.2vw, 26px);line-height:1}
-  .card .rank-btm{font-size:clamp(11px, 2.8vw, 14px);font-weight:800}
+  /* Cards optimized for iPhone (including Pro Max) */
+  /* Reduced from 18vw to 16vw and max from 84px to 76px for better fit */
+  .card{width:clamp(68px, 16vw, 76px);height:clamp(97.75px, 23vw, 109.25px);flex-shrink:0;padding:6px;border-radius:10px}
+  .card .rank{font-size:clamp(11px, 2.6vw, 13px);font-weight:800}
+  .card .pip{font-size:clamp(20px, 4.8vw, 24px);line-height:1}
+  .card .rank-btm{font-size:clamp(11px, 2.6vw, 13px);font-weight:800}
   .cardrow{gap:8px;justify-content:center;flex-shrink:0;flex-wrap:nowrap}
 
   /* Hands layout */
