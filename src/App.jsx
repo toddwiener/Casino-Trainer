@@ -265,10 +265,11 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
   .section h4{font-size:11px;text-align:center;margin-bottom:8px;font-weight:700;color:var(--muted)}
 
   /* Cards with proper aspect ratio (NO transform scaling) */
-  .card{width:clamp(68px, 18vw, 84px);height:auto;aspect-ratio:16 / 23;flex-shrink:0;padding:6px;border-radius:10px}
-  .card .rank{font-size:clamp(11px, 2.8vw, 14px)}
-  .card .pip{font-size:clamp(20px, 5.2vw, 26px)}
-  .card .rank-btm{font-size:clamp(11px, 2.8vw, 14px)}
+  /* Calculate height directly (16:23 ratio) to support all browsers */
+  .card{width:clamp(68px, 18vw, 84px);height:clamp(97.75px, 25.875vw, 120.75px);flex-shrink:0;padding:6px;border-radius:10px}
+  .card .rank{font-size:clamp(11px, 2.8vw, 14px);font-weight:800}
+  .card .pip{font-size:clamp(20px, 5.2vw, 26px);line-height:1}
+  .card .rank-btm{font-size:clamp(11px, 2.8vw, 14px);font-weight:800}
   .cardrow{gap:8px;justify-content:center;flex-shrink:0;flex-wrap:nowrap}
 
   /* Hands layout */
