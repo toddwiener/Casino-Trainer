@@ -254,8 +254,9 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
   .stat-group{padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:4px}
   .stat-value{font-size:18px;font-weight:800}
   .stat-label{font-size:9px;letter-spacing:0.5px;font-weight:600}
-  .pill{padding:4px 7px;gap:4px;font-size:15px;font-weight:800}
-  .pill svg{width:12px;height:12px}
+  /* Make Pill match stat-value styling on mobile */
+  .pill{padding:2px 4px;gap:3px;font-size:18px;font-weight:800;background:transparent;border:none;box-shadow:none}
+  .pill svg{width:13px;height:13px}
 
   /* Main content with bottom padding for sticky dock */
   .main-content{padding:12px;padding-bottom:20px}
@@ -266,12 +267,11 @@ body{margin:0;padding:0;min-height:100%;width:100%;font-family:ui-sans-serif, sy
   .section{width:100%;display:flex;flex-direction:column;align-items:center}
   .section h4{font-size:11px;text-align:center;margin-bottom:8px;font-weight:700;color:var(--muted)}
 
-  /* Cards optimized for iPhone (including Pro Max) */
-  /* Reduced from 18vw to 16vw and max from 84px to 76px for better fit */
-  .card{width:clamp(68px, 16vw, 76px);height:clamp(97.75px, 23vw, 109.25px);flex-shrink:0;padding:6px;border-radius:10px}
-  .card .rank{font-size:clamp(11px, 2.6vw, 13px);font-weight:800}
-  .card .pip{font-size:clamp(20px, 4.8vw, 24px);line-height:1}
-  .card .rank-btm{font-size:clamp(11px, 2.6vw, 13px);font-weight:800}
+  /* Cards: 17vw scales better on Pro Max (73px) vs normal iPhone (68px min) */
+  .card{width:clamp(68px, 17vw, 76px);height:clamp(97.75px, 24.4375vw, 109.25px);flex-shrink:0;padding:6px;border-radius:10px}
+  .card .rank{font-size:clamp(11px, 2.7vw, 13px);font-weight:800}
+  .card .pip{font-size:clamp(20px, 5vw, 24px);line-height:1}
+  .card .rank-btm{font-size:clamp(11px, 2.7vw, 13px);font-weight:800}
   .cardrow{gap:8px;justify-content:center;flex-shrink:0;flex-wrap:nowrap}
 
   /* Hands layout */
